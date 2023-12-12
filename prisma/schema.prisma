@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 datasource db {
     provider = "postgresql"
-    url      = env("PRISMA_URL")
+    url      = env("DATABASE_URL")
 }
 
 generator client {
@@ -17,9 +17,9 @@ model AuthUser {
     role          Role          @default(USER)
     verified      Boolean       @default(false)
     receiveEmail  Boolean       @default(true)
-    token         String?    @unique
-    createdAt      DateTime          @default(now()) @db.Timestamp(6)
-    updatedAt       DateTime        @updatedAt @db.Timestamp(6)
+    token         String?       @unique
+    createdAt     DateTime      @default(now()) @db.Timestamp(6)
+    updatedAt      DateTime     @updatedAt @db.Timestamp(6)
     auth_session  AuthSession[]
     auth_key      AuthKey[]
 

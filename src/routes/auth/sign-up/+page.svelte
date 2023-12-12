@@ -1,33 +1,84 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button';
-	import * as Card from '$lib/components/ui/card';
-	import { Label } from '$lib/components/ui/label';
-	import { Input } from '$lib/components/ui/input';
-	import { cn } from '$lib/utils';
-	import { superForm } from 'sveltekit-superforms/client';
-	//import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
-	import { userSchema } from '$lib/config/zod-schemas';
-	export let data;
+	import * as Form from '$lib/components/ui/form';
+	import { userSchema, type UserSchema } from '$lib/config/zod-schemas';
+	import type { SuperValidated } from 'sveltekit-superforms';
+	import { Loader2 } from 'lucide-svelte';
+	import Checkbox from '$lib/components/ui/checkbox/checkbox.svelte';
 
 	const signUpSchema = userSchema.pick({
 		firstName: true,
 		lastName: true,
 		email: true,
-		password: true
+		password: true,
+		terms: true
 	});
 
-	const { form, errors, enhance, delayed } = superForm(data.form, {
+	type SignUpSchema = typeof signUpSchema;
+
+	export let form: SuperValidated<SignUpSchema>;
+
+	//export let data;
+
+	/*const { form, errors, enhance, delayed } = superForm(data.form, {
 		taintedMessage: null,
 		validators: signUpSchema,
 		delayMs: 0
-	});
+	});*/
 
-	let termsAccept = false;
+	//let termsAccept = false;
 	// $: termsValue = $form.terms as Writable<boolean>;
 </script>
 
-<form method="POST" action="/auth/sign-up" use:enhance>
-	<!--<SuperDebug data={$form} />-->
+<Form.Root let:delayed method="POST" {form} schema={signUpSchema} let:config debug={true}>
+	<Form.Field {config} name="firstName">
+		<Form.Item>
+			<Form.Label>First Name</Form.Label>
+			<Form.Input />
+			<Form.Validation />
+		</Form.Item>
+	</Form.Field>
+	<Form.Field {config} name="lastName">
+		<Form.Item>
+			<Form.Label>Last Name</Form.Label>
+			<Form.Input />
+			<Form.Validation />
+		</Form.Item>
+	</Form.Field>
+	<Form.Field {config} name="email">
+		<Form.Item>
+			<Form.Label>Email</Form.Label>
+			<Form.Input />
+			<Form.Validation />
+		</Form.Item>
+	</Form.Field>
+	<Form.Field {config} name="password">
+		<Form.Item>
+			<Form.Label>Password</Form.Label>
+			<Form.Input type="password" />
+			<Form.Validation />
+		</Form.Item>
+	</Form.Field>
+	<Form.Field {config} name="terms">
+		<Form.Item class="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+			<Form.Checkbox />
+			<div class="space-y-1 leading-none">
+				<Form.Label>I Accept the terms and privacy policy.</Form.Label>
+				<Form.Description>
+					You agree to the <a href="/terms" class="text-primaryHover underline">terms</a> and
+					<a href="/privacy" class="text-primaryHover underline">privacy policy</a>.
+				</Form.Description>
+			</div>
+		</Form.Item>
+	</Form.Field>
+	<Form.Button disabled={delayed}
+		>{#if delayed}
+			<Loader2 class="mr-2 h-4 w-4 animate-spin" />
+			Please wait{:else}Sign Up{/if}</Form.Button
+	>
+</Form.Root>
+
+<!--<form method="POST" action="/auth/sign-up" use:enhance>
+	
 	<div class="mt-6">
 		<label class="label">
 			<span class="sr-only">First Name</span>
@@ -112,9 +163,9 @@
 				<a href="/terms" class="text-primaryHover underline">terms</a>
 				and
 				<a href="/privacy" class="text-primaryHover underline">privacy policy</a>
-				<!--{#if $errors.terms}
+				{#if $errors.terms}
 					<small>{$errors.terms}</small>
-				{/if}-->
+				{/if}
 			</span>
 		</label>
 	</div>
@@ -185,4 +236,4 @@
 		{' '}
 		Github
 	</Button>
-</div>
+</div>-->

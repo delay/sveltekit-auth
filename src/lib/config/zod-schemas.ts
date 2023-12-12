@@ -25,11 +25,16 @@ export const userSchema = z.object({
 		.enum(['USER', 'PREMIUM', 'ADMIN'], { required_error: 'You must have a role' })
 		.default('USER'),
 	verified: z.boolean().default(false),
+	terms: z.literal<boolean>(true, {
+		errorMap: () => ({ message: "You must accept the terms & privacy policy" }),
+	}),
 	token: z.string().optional(),
 	receiveEmail: z.boolean().default(true),
 	createdAt: z.date().optional(),
 	updatedAt: z.date().optional()
 });
+
+export type UserSchema = typeof userSchema;
 
 export const userUpdatePasswordSchema = userSchema
 	.pick({ password: true, confirmPassword: true })
@@ -47,3 +52,5 @@ export const userUpdatePasswordSchema = userSchema
 			});
 		}
 	});
+
+	export type UserUpdatePasswordSchema = typeof userUpdatePasswordSchema;
