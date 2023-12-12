@@ -1,6 +1,6 @@
 import { dev } from '$app/environment';
 export const BASE_URL = dev ? 'http://localhost:5173' : 'https://sveltekit-auth.uv-ray.com';
-export const APP_NAME = 'Sveltekit Auth Starter';
+export const APP_NAME = 'Sveltekit Auth';
 export const CONTACT_EMAIL = 'yourname@email.com';
 export const DOMAIN = 'sveltekit-auth.uv-ray.com';
 /* WARNING!!! TERMS AND CONDITIONS AND PRIVACY POLICY 
