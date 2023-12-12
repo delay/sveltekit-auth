@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+datasource db {
+    provider = "postgresql"
+    url      = env("PRISMA_URL")
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model AuthUser {
+    id            String        @id @unique
+    email         String        @unique
+    firstName     String
+    lastName      String
+    role          Role          @default(USER)
+    verified      Boolean       @default(false)
+    receiveEmail  Boolean       @default(true)
+    token         String?    @unique
+    createdAt      DateTime          @default(now()) @db.Timestamp(6)
+    updatedAt       DateTime        @updatedAt @db.Timestamp(6)
+    auth_session  AuthSession[]
+    auth_key      AuthKey[]
+
+  @@map("auth_user")
+}
+
+model AuthSession {
+  id             String   @id @unique
+  user_id        String
+  active_expires BigInt
+  idle_expires   BigInt
+  auth_user      AuthUser @relation(references: [id], fields: [user_id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("auth_session")
+}
+
+model AuthKey {
+  id              String   @id @unique
+  hashed_password String?
+  user_id         String
+  auth_user       AuthUser @relation(references: [id], fields: [user_id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("auth_key")
+}
+
+enum Role {
+  USER
+  PREMIUM
+  ADMIN
+}
