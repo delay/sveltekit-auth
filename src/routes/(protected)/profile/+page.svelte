@@ -19,6 +19,7 @@
 	type ProfileSchema = typeof profileSchema;
 
 	export let form: SuperValidated<ProfileSchema>;
+	form = data.form;
 </script>
 
 <div class="flex items-center justify-center mx-auto max-w-2xl">

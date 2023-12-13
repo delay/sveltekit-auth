@@ -8,7 +8,7 @@
 	export let data: any;
 	let user: Lucia.UserAttributes = data.user;
 	const flash = getFlash(page);
-	$: console.log($flash);
+	$: console.log('+layout.svelte root flash: ' + $flash);
 	/*$: if ($flash) {
 		switch ($flash.type) {
 			case 'success':
