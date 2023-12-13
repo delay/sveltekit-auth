@@ -1,9 +1,28 @@
 <script lang="ts">
 	import '../app.pcss';
+	import { page } from '$app/stores';
 	import { ModeWatcher } from 'mode-watcher';
+	import { getFlash } from 'sveltekit-flash-message';
 	import Navigation from '$lib/components/navigation/navigation.svelte';
+
 	export let data: any;
-	let user: any = data.user;
+	let user: Lucia.UserAttributes = data.user;
+	const flash = getFlash(page);
+	$: console.log($flash);
+	/*$: if ($flash) {
+		switch ($flash.type) {
+			case 'success':
+				toast($flash.message, {
+					position: 'bottom-right',
+					duration: 5000,
+					style: 'background: #000; color: #fff;'
+				});
+				break;
+			case 'error':
+				toast.error($flash.message);
+				break;
+		}
+	}*/
 </script>
 
 <ModeWatcher />

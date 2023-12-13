@@ -1,4 +1,5 @@
 import { fail, redirect } from '@sveltejs/kit';
+import { setFlash } from 'sveltekit-flash-message/server';
 import { setError, superValidate } from 'sveltekit-superforms/server';
 import { auth } from '$lib/server/lucia';
 import { userSchema } from '$lib/config/zod-schemas';
@@ -23,6 +24,7 @@ export const load = async (event) => {
 
 export const actions = {
 	default: async (event) => {
+		
 		const form = await superValidate(event, signUpSchema);
 		//console.log(form);
 
@@ -57,7 +59,8 @@ export const actions = {
 			await sendVerificationEmail(form.data.email, token);
 			const session = await auth.createSession({ userId: user.userId, attributes: {} });
 			event.locals.auth.setSession(session);
-		} catch (e) {
+			setFlash({ type: 'success', message: 'Account created. Please check your email to verify your account.' }, event);
+			} catch (e) {
 			console.error(e);
 			// email already in use
 			//might be other type of error but this is most common and this is how lucia docs sets the error to duplicate user

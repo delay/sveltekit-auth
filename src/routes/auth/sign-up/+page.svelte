@@ -22,7 +22,7 @@
 </script>
 
 <div class="flex items-center justify-center mx-auto max-w-2xl">
-	<Form.Root let:submitting let:errors method="POST" {form} schema={signUpSchema} let:config debug>
+	<Form.Root let:submitting let:errors method="POST" {form} schema={signUpSchema} let:config>
 		<Card.Root>
 			<Card.Header class="space-y-1">
 				<Card.Title class="text-2xl">Create an account</Card.Title>
@@ -32,12 +32,14 @@
 				>
 			</Card.Header>
 			<Card.Content class="grid gap-4">
-				{#if errors?._errors}
+				{#if errors?._errors?.length}
 					<Alert.Root variant="destructive">
 						<AlertCircle class="h-4 w-4" />
 						<Alert.Title>Error</Alert.Title>
 						<Alert.Description>
-							{errors._errors}
+							{#each errors._errors as error}
+								{error}
+							{/each}
 						</Alert.Description>
 					</Alert.Root>
 				{/if}

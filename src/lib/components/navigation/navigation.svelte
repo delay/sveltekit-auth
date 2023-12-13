@@ -21,6 +21,15 @@
 			initials = convertNameToInitials(user?.firstName, user?.lastName);
 		}
 	});
+
+	function signOut() {
+		// Create a form element
+		var form = document.createElement('form');
+		form.method = 'POST';
+		form.action = '/auth/sign-out';
+		document.body.appendChild(form);
+		form.submit();
+	}
 	//$: initials = convertNameToInitials(data.user.firstName, data.user.lastName);
 	let initials: string;
 	$: initials = initials;
@@ -82,7 +91,7 @@
 								<DropdownMenu.Item>New Team</DropdownMenu.Item>
 							</DropdownMenu.Group>
 							<DropdownMenu.Separator />
-							<DropdownMenu.Item>
+							<DropdownMenu.Item on:click={signOut}>
 								Sign out
 								<DropdownMenu.Shortcut>⇧⌘Q</DropdownMenu.Shortcut>
 							</DropdownMenu.Item>
