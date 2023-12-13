@@ -76,7 +76,7 @@
 							</DropdownMenu.Label>
 							<DropdownMenu.Separator />
 							<DropdownMenu.Group>
-								<DropdownMenu.Item>
+								<DropdownMenu.Item on:click={() => goto('/profile')}>
 									Profile
 									<DropdownMenu.Shortcut>⇧⌘P</DropdownMenu.Shortcut>
 								</DropdownMenu.Item>
