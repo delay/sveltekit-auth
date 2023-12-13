@@ -6,7 +6,8 @@
 	import Navigation from '$lib/components/navigation/navigation.svelte';
 
 	export let data: any;
-	let user: Lucia.UserAttributes = data.user;
+	let user: Lucia.UserAttributes;
+	$: user = data.user;
 	const flash = getFlash(page);
 	$: console.log('+layout.svelte root flash: ' + $flash);
 	/*$: if ($flash) {

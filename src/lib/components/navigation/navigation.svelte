@@ -13,15 +13,6 @@
 	export let user: any;
 	$: currentPage = $page.url.pathname;
 
-	import { onMount } from 'svelte';
-
-	onMount(() => {
-		user = user;
-		if (user?.firstName && user?.lastName) {
-			initials = convertNameToInitials(user?.firstName, user?.lastName);
-		}
-	});
-
 	function signOut() {
 		// Create a form element
 		var form = document.createElement('form');
@@ -30,9 +21,13 @@
 		document.body.appendChild(form);
 		form.submit();
 	}
-	//$: initials = convertNameToInitials(data.user.firstName, data.user.lastName);
-	let initials: string;
-	$: initials = initials;
+
+	let initials: string = '';
+	$: {
+		if (user) {
+			initials = convertNameToInitials(user.firstName, user.lastName);
+		}
+	}
 </script>
 
 <header class="bg-background sticky top-0 z-40 w-full border-b">

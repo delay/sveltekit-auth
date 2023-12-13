@@ -42,7 +42,7 @@ export const actions = {
 			console.error(e);
 			// email already in use
 			//const { fieldErrors: errors } = e.flatten();
-			return setError(form, null, 'The email or password is incorrect.');
+			return setError(form, 'The email or password is incorrect.');
 		}
 
 		return { form };
