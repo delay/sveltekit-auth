@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+	import * as Command from '$lib/components/ui/command';
 	import * as Avatar from '$lib/components/ui/avatar';
-	import { Sun, Moon } from 'lucide-svelte';
+	import { Sun, Moon, SunMoon, UserRound, LogOut } from 'lucide-svelte';
 	import { setMode, resetMode } from 'mode-watcher';
 	import { APP_NAME } from '$lib/config/constants';
 	import Logo from '$lib/components/logo/logo.svelte';
@@ -53,6 +54,24 @@
 			<nav class="flex items-center space-x-1">
 				{#if !user}
 					<Button on:click={() => goto('/auth/sign-in')}>Sign in</Button>
+					<DropdownMenu.Root>
+						<DropdownMenu.Trigger asChild let:builder>
+							<Button builders={[builder]} variant="ghost" size="icon">
+								<Sun
+									class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
+								/>
+								<Moon
+									class="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
+								/>
+								<span class="sr-only">Toggle theme</span>
+							</Button>
+						</DropdownMenu.Trigger>
+						<DropdownMenu.Content align="end">
+							<DropdownMenu.Item on:click={() => setMode('light')}>Light</DropdownMenu.Item>
+							<DropdownMenu.Item on:click={() => setMode('dark')}>Dark</DropdownMenu.Item>
+							<DropdownMenu.Item on:click={() => resetMode()}>System</DropdownMenu.Item>
+						</DropdownMenu.Content>
+					</DropdownMenu.Root>
 				{:else}
 					<DropdownMenu.Root>
 						<DropdownMenu.Trigger asChild let:builder>
@@ -72,37 +91,43 @@
 							<DropdownMenu.Separator />
 							<DropdownMenu.Group>
 								<DropdownMenu.Item on:click={() => goto('/profile')}>
+									<UserRound class="mr-2 h-4 w-4" />
 									Profile
 									<DropdownMenu.Shortcut>⇧⌘P</DropdownMenu.Shortcut>
 								</DropdownMenu.Item>
 							</DropdownMenu.Group>
+
+							<DropdownMenu.Sub>
+								<DropdownMenu.SubTrigger>
+									<Sun
+										class="mr-2 h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
+									/>
+									<Moon
+										class="absolute mr-2 h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
+									/>
+									Appearance
+								</DropdownMenu.SubTrigger>
+								<DropdownMenu.SubContent>
+									<DropdownMenu.Item on:click={() => setMode('light')}
+										><Sun class="mr-2 h-4 w-4" />Light
+									</DropdownMenu.Item>
+									<DropdownMenu.Item on:click={() => setMode('dark')}
+										><Moon class="mr-2 h-4 w-4" />Dark
+									</DropdownMenu.Item>
+									<DropdownMenu.Item on:click={() => setMode('system')}
+										><SunMoon class="mr-2 h-4 w-4" />System
+									</DropdownMenu.Item>
+								</DropdownMenu.SubContent>
+							</DropdownMenu.Sub>
 							<DropdownMenu.Separator />
 							<DropdownMenu.Item on:click={signOut}>
+								<LogOut class="mr-2 h-4 w-4" />
 								Sign out
 								<DropdownMenu.Shortcut>⇧⌘Q</DropdownMenu.Shortcut>
 							</DropdownMenu.Item>
 						</DropdownMenu.Content>
 					</DropdownMenu.Root>
 				{/if}
-
-				<DropdownMenu.Root>
-					<DropdownMenu.Trigger asChild let:builder>
-						<Button builders={[builder]} variant="ghost" size="icon">
-							<Sun
-								class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
-							/>
-							<Moon
-								class="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
-							/>
-							<span class="sr-only">Toggle theme</span>
-						</Button>
-					</DropdownMenu.Trigger>
-					<DropdownMenu.Content align="end">
-						<DropdownMenu.Item on:click={() => setMode('light')}>Light</DropdownMenu.Item>
-						<DropdownMenu.Item on:click={() => setMode('dark')}>Dark</DropdownMenu.Item>
-						<DropdownMenu.Item on:click={() => resetMode()}>System</DropdownMenu.Item>
-					</DropdownMenu.Content>
-				</DropdownMenu.Root>
 			</nav>
 		</div>
 	</div>
