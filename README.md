@@ -1,6 +1,6 @@
 # Sveltekit Auth
 
-![Sveltekit Auth User Interface](https://miro.medium.com/v2/resize:fit:4772/1*v-oJRLXc299bFOzDS-fnyA.png)
+![Sveltekit Auth User Interface](https://github.com/delay/sveltekit-auth/assets/638246/3fbb5318-cf46-40ab-a33b-9660019beec8)
 
 This is a Sveltekit Auth Project. An example website is currently deployed [here](https://sveltekit-auth-shadcn.uv-ray.com/). It is an open source auth starter project utilizing [Lucia](https://lucia-auth.com/) for authentication, [shadcn-svelte](https://www.shadcn-svelte.com/) for ui elements, [Lucide](https://lucide.dev) for icons, [Prisma](https://www.prisma.io) for database connectivity and type safety and [Sveltekit](https://kit.svelte.dev) for the javascript framework. I also used [Zod](https://zod.dev) and [Superforms](https://superforms.vercel.app) to handle form validation and management. It has email verification, password reset, and will send an email if the user changes their email address to re-verify it. It is released as open source under an MIT license.
 
@@ -22,7 +22,7 @@ Finally [Superforms](https://superforms.vercel.app/) makes it easy to work with 
 
 This was the first time working with many of these packages, but they really do streamline much of the Sveltekit development process. If there are any mistakes, please open up an issue on the project. Also I was pleasantly surprised at the scores from [Google PageSpeed Insights](https://pagespeed.web.dev). This project scored a 100% in all metrics.
 
-![pagespeed insights metrics](https://miro.medium.com/v2/resize:fit:1400/1*SlpRE8RL3KIJW8af7P8otw.png)
+![pagespeed insights metrics](https://github.com/delay/sveltekit-auth/assets/638246/599540c3-54e4-4e99-ad2a-c9da284f44c7)
 
 ## File Structure for the App
 
