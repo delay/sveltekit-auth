@@ -64,7 +64,7 @@
 					</Form.Button>
 
 					<div class="mt-6 text-center text-sm">
-						<a href="/auth/forgot-password" class="underline">Forgot your password?</a>
+						<a href="/auth/password/reset" class="underline">Forgot your password?</a>
 					</div>
 				</div>
 			</Card.Footer>

@@ -41,14 +41,14 @@
 
 				<Form.Field {config} name="password">
 					<Form.Item>
-						<Form.Label>Password</Form.Label>
+						<Form.Label>New Password</Form.Label>
 						<Form.Input type="password" />
 						<Form.Validation />
 					</Form.Item>
 				</Form.Field>
 				<Form.Field {config} name="confirmPassword">
 					<Form.Item>
-						<Form.Label>Confirm Password</Form.Label>
+						<Form.Label>Confirm New Password</Form.Label>
 						<Form.Input type="password" />
 						<Form.Validation />
 					</Form.Item>
