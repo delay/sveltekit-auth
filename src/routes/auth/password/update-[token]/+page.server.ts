@@ -61,7 +61,7 @@ export const actions = {
 			);
 		}
 		const token = event.params.token as string;
-		throw redirect(302, `/auth/password/update-${token}/success`);
+		redirect(302, `/auth/password/update-${token}/success`);
 		//		return { form };
 	}
 };

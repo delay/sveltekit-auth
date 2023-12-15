@@ -45,7 +45,7 @@ export const actions = {
 				'The was a problem resetting your password. Please contact support if you need further help.'
 			);
 		}
-		throw redirect(302, '/auth/password/reset/success');
+		redirect(302, '/auth/password/reset/success');
 		//		return { form };
 	}
 };
