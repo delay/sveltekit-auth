@@ -31,9 +31,15 @@
 				for icons, <a href="https://superforms.rocks/" class="underline">Superforms</a>
 				for working with forms, <a href="https://zod.dev/" class="underline">Zod</a>
 				for typescript schema validation and
-				<a href="https://kit.svelte.dev/" class="underline">Sveltekit</a> for the javascript framework.
-				It has email verification, password reset, and will send an email out if the user changes their
-				email address to re-verify it. It is released as open source under an MIT license.
+				<a href="https://kit.svelte.dev/" class="underline">Sveltekit</a> for the javascript
+				framework. It has email verification, password reset, and will send an email out if the user
+				changes their email address to re-verify it. It also has a custom logging feature which I
+				wrote in depth on
+				<a
+					href="https://jeffmcmorris.medium.com/awesome-logging-in-sveltekit-6afa29c5892c"
+					class="underline">here</a
+				>. It is released as open source under an MIT license. The source code is available on
+				<a href="https://github.com/delay/sveltekit-auth" class="underline">github</a>.
 			</p>
 		</div>
 		<div class="flex gap-4">
