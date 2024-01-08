@@ -16,18 +16,18 @@
 		switch ($flash.type) {
 			case 'success':
 				//console.log('flash.message.success: ' + $flash.message);
-				toast($flash.message);
+				toast.success($flash.message);
 				break;
 			case 'error':
 				//console.log('flash.message.error: ' + $flash.message);
-				toast($flash.message);
+				toast.error($flash.message);
 				break;
 		}
 	}
 </script>
 
 <ModeWatcher />
-<Toaster />
+<Toaster richColors />
 <div class="relative flex min-h-screen flex-col">
 	<Navigation {user} />
 	<div class="mt-8 md:mt-12">
