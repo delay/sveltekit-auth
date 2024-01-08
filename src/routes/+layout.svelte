@@ -15,9 +15,11 @@
 	$: if ($flash) {
 		switch ($flash.type) {
 			case 'success':
+				//console.log('flash.message.success: ' + $flash.message);
 				toast($flash.message);
 				break;
 			case 'error':
+				//console.log('flash.message.error: ' + $flash.message);
 				toast($flash.message);
 				break;
 		}
