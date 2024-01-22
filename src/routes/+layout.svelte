@@ -1,36 +1,31 @@
 <script lang="ts">
-	import '../app.pcss';
-	import { page } from '$app/stores';
-	import { ModeWatcher } from 'mode-watcher';
-	import { getFlash } from 'sveltekit-flash-message';
-	import { Toaster } from '$lib/components/ui/sonner';
-	import { toast } from 'svelte-sonner';
-	import Navigation from '$lib/components/navigation/navigation.svelte';
+    import { page } from "$app/stores";
+    import { setLanguageTag, sourceLanguageTag, type AvailableLanguageTag, isAvailableLanguageTag } from "$paraglide/runtime";
 
-	export let data: any;
-	let user: Lucia.UserAttributes;
-	$: user = data.user;
-	const flash = getFlash(page);
-	//$: console.log('+layout.svelte root flash: ' + JSON.stringify($flash));
-	$: if ($flash) {
-		switch ($flash.type) {
-			case 'success':
-				//console.log('flash.message.success: ' + $flash.message);
-				toast.success($flash.message);
-				break;
-			case 'error':
-				//console.log('flash.message.error: ' + $flash.message);
-				toast.error($flash.message);
-				break;
-		}
-	}
-</script>
+    import { browser } from "$app/environment";
+    import { getTextDirection } from "$lib/i18n-routing";
+    import I18NHeader from "$lib/components/I18NHeader.svelte";
+	
+    //Use the default language if no language is given
+    $: lang = $page.params.lang as AvailableLanguageTag ?? sourceLanguageTag;
+    //Set the language tag in the Paraglide runtime.
+      //This determines which language the strings are translated to.
+      //You should only do this in the template, to avoid concurrent requests interfering with each other.
+      $: setLanguageTag(lang);
 
-<ModeWatcher />
-<Toaster richColors />
-<div class="relative flex min-h-screen flex-col">
-	<Navigation {user} />
-	<div class="mt-8 md:mt-12">
-		<slot />
-	</div>
-</div>
+      
+    //Determine the text direction of the current language
+    $: textDirection = getTextDirection(lang);
+
+    //Keep the <html> lang and dir attributes in sync with the current language
+    $: if (browser) {
+      document.documentElement.dir = textDirection;
+      document.documentElement.lang = lang;
+    }
+  </script>
+  
+  <I18NHeader />
+  {#key lang}
+    <slot/>
+  {/key}
+  

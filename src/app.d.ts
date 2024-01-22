@@ -1,4 +1,5 @@
 // src/app.d.ts
+import type { AvailableLanguageTag } from "$paraglide/runtime";
 declare global {
 	namespace App {
 		interface Locals {
@@ -8,6 +9,7 @@ declare global {
 			error: string;
 			errorId: string;
 			errorStackTrace: string;
+			lang: AvailableLanguageTag;
 			message: unknown;
 			track: unknown;
 		}
@@ -17,6 +19,11 @@ declare global {
 		}
 		interface PageData {
 			flash?: { type: 'success' | 'error'; message: string };
+		}
+		interface MailConfig {
+			recipient: string;
+			subject: string;
+			htmlMessage: string;
 		}
 	}
 }
@@ -37,6 +44,8 @@ declare global {
 		};
 	}
 }
+
+declare module 'prisma';
 
 // THIS IS IMPORTANT!!!
 export {};

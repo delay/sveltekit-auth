@@ -5,8 +5,15 @@ import {
 	AWS_ACCESS_KEY_ID,
 	AWS_SECRET_ACCESS_KEY,
 	AWS_REGION,
-	AWS_API_VERSION
+	AWS_API_VERSION,
+	SMTP_HOST,
+	SMTP_PORT,
+	SMTP_USER,
+	SMTP_PASS,
+	SMTP_SECURE
 } from '$env/static/private';
+
+import * as m from '$paraglide/messages';
 //import { z } from "zod";
 export default async function sendEmail(
 	email: string,
@@ -15,30 +22,39 @@ export default async function sendEmail(
 	bodyText?: string
 ) {
 	const hasAccessKeys = AWS_ACCESS_KEY_ID && AWS_SECRET_ACCESS_KEY;
-
-	const ses = new aws.SES({
-		apiVersion: AWS_API_VERSION,
-		region: AWS_REGION,
-		...(hasAccessKeys
-			? {
-					credentials: {
-						accessKeyId: AWS_ACCESS_KEY_ID || '',
-						secretAccessKey: AWS_SECRET_ACCESS_KEY || ''
-					}
-			  }
-			: {})
-	});
+	let ses;
+	if (hasAccessKeys) {
+		ses = new aws.SES({
+			apiVersion: AWS_API_VERSION,
+			region: AWS_REGION,
+			...(hasAccessKeys
+				? {
+						credentials: {
+							accessKeyId: AWS_ACCESS_KEY_ID || '',
+							secretAccessKey: AWS_SECRET_ACCESS_KEY || ''
+						}
+				}
+				: {
+				})
+		});
+	}
 
 	// create Nodemailer SES transporter
-	const transporter = nodemailer.createTransport({
+	const transporter = nodemailer.createTransport(hasAccessKeys ? {
 		SES: { ses, aws }
+	} : {
+		host: SMTP_HOST,
+		port: SMTP_PORT,
+		secure: Number(SMTP_SECURE) === 1, // false means 'use TLS'
+		auth: {
+			user: SMTP_USER,
+			pass: SMTP_PASS,
+		},
+		tls: {
+			// do not fail on invalid certs
+			rejectUnauthorized: false,
+		}, 
 	});
-
-	interface MailConfig {
-		recipient: string;
-		subject: string;
-		htmlMessage: string;
-	}
 
 	try {
 		if (!bodyText) {
@@ -51,7 +67,7 @@ export default async function sendEmail(
 				},
 				(err, info) => {
 					if (err) {
-						throw new Error(`Error sending email: ${JSON.stringify(err)}`);
+						throw new Error(`Error sending email: ${JSON.stringify({ err, info})}`);
 					}
 				}
 			);
@@ -65,7 +81,7 @@ export default async function sendEmail(
 				},
 				(err, info) => {
 					if (err) {
-						throw new Error(`Error sending email: ${JSON.stringify(err)}`);
+						throw new Error(`Error sending email: ${JSON.stringify({ err, info})}`);
 					}
 				}
 			);
@@ -80,7 +96,7 @@ export default async function sendEmail(
 				},
 				(err, info) => {
 					if (err) {
-						throw new Error(`Error sending email: ${JSON.stringify(err)}`);
+						throw new Error(`Error sending email: ${JSON.stringify({ err, info})}`);
 					}
 				}
 			);
@@ -91,6 +107,6 @@ export default async function sendEmail(
 			message: 'E-mail sent successfully.'
 		};
 	} catch (error) {
-		throw new Error(`Error sending email: ${JSON.stringify(error)}`);
+		throw new Error(`${m.sendmailerr()}: ${JSON.stringify(error)}`);
 	}
 }

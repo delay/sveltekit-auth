@@ -1,5 +1,6 @@
 //import * as SentrySvelte from '@sentry/svelte';
 import type { HandleClientError } from '@sveltejs/kit';
+import * as m from '$paraglide/messages';
 
 /*SentrySvelte.init({
 	dsn: 'https://8c3bc4d0fd5c4d64b8e36187fa9150de@o516805.ingest.sentry.io/4505106025545728',
@@ -18,7 +19,7 @@ export const handleError: HandleClientError = ({ error }) => {
         contexts: { sveltekit: { event, errorId } }
     });*/
     return {
-        message: 'An unexpected error occurred.',
+        message: m.unexperr(),
         errorId
     };
 };
