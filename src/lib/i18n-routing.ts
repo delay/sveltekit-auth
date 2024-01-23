@@ -18,8 +18,8 @@ export const defaultLanguage = defaultLang(); // on client
 export function translatePath(path: string, lang: AvailableLanguageTag, defLang: AvailableLanguageTag | undefined = undefined) {
 	path = withoutLanguageTag(path); 
 	// Don't prefix the default language
-	if (browser && (lang === defaultLanguage) /* sourceLanguageTag */) return `${path}`;
-	if (!browser && defLang && (lang === defLang)) return `${path}`;
+	const langDefault = browser ? defaultLanguage : (defLang ? defLang : sourceLanguageTag);
+	if (lang === langDefault) return `${path}`;
 
 	// Prefix all other languages
 	return `/${lang}${path}`;
