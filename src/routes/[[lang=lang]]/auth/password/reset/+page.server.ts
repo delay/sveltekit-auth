@@ -48,7 +48,7 @@ export const actions = {
 				m.resetPwdProblem()
 			);
 		}
-		redirect(302, translatePath('/auth/password/reset/success', event.locals.lang));
+		redirect(302, translatePath('/auth/password/reset/success', event.locals.lang, event.locals.defaultLang));
 		//		return { form };
 	}
 };

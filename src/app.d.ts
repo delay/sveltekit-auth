@@ -10,6 +10,7 @@ declare global {
 			errorId: string;
 			errorStackTrace: string;
 			lang: AvailableLanguageTag;
+			defaultLang: AvailableLanguageTag;
 			message: unknown;
 			track: unknown;
 		}

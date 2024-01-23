@@ -13,7 +13,7 @@ const signInSchema = userSchema.pick({
 
 export const load = async (event) => {
 	const session = await event.locals.auth.validate();
-	if (session) redirect(302, translatePath('/dashboard', event.locals.lang));
+	if (session) redirect(302, translatePath('/dashboard', event.locals.lang, event.locals.defaultLang));
 	const form = await superValidate(event, signInSchema);
 	return {
 		form

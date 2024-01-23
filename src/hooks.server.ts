@@ -3,11 +3,11 @@ import { redirect, type Handle } from '@sveltejs/kit';
 /* begin sentry.io */
 //import * as SentryNode from '@sentry/node';
 import type { HandleServerError } from '@sveltejs/kit';
-import { sourceLanguageTag, type AvailableLanguageTag } from "$paraglide/runtime";
+import { type AvailableLanguageTag, setLanguageTag } from "$paraglide/runtime";
 import * as m from '$paraglide/messages';
 
 import log from '$lib/server/log';
-import { translatePath } from '$lib/i18n-routing';
+import { defaultLang, translatePath } from '$lib/i18n-routing';
 
 /*SentryNode.init({
 	dsn: 'https://8c3bc4d0fd5c4d64b8e36187fa9150de@o516805.ingest.sentry.io/4505106025545728',
@@ -44,8 +44,16 @@ export const handle: Handle = async ({ event, resolve }) => {
 	const startTimer = Date.now();
 	event.locals.startTimer = startTimer;
 
-	const lang: AvailableLanguageTag = event.params.lang as AvailableLanguageTag ?? sourceLanguageTag;
+	const header = event.request.headers.get("Accept-Language");
+	let langFromHeader: AvailableLanguageTag | null = null;
+	if (header) {
+		langFromHeader = header.split(',')[0] as AvailableLanguageTag;
+	}
+	const defLang = defaultLang(langFromHeader);
+	event.locals.defaultLang = defLang;
+	const lang: AvailableLanguageTag = event.params.lang as AvailableLanguageTag ?? defLang /* sourceLanguageTag*/;
 	event.locals.lang = lang;
+	setLanguageTag(lang); // update language expressions on server as well according to the most recent language selection set on client
 
 	event.locals.auth = auth.handleRequest(event);
 	if (event.locals?.auth) {
@@ -55,8 +63,8 @@ export const handle: Handle = async ({ event, resolve }) => {
 			event.locals.user = user;
 		}
 		if (event.route.id?.startsWith('/[[lang=lang]]/(protected)')) {
-			if (!user) redirect(302, translatePath('/auth/sign-in', lang));
-			if (!user.verified) redirect(302, translatePath('/auth/verify/email', lang));
+			if (!user) redirect(302, translatePath('/auth/sign-in', lang, defLang));
+			if (!user.verified) redirect(302, translatePath('/auth/verify/email', lang, defLang));
 		}
 		if (event.route.id?.startsWith('/[[lang=lang]]/(admin)')) {
 			if (user?.role !== 'ADMIN') redirect(302, translatePath('/auth/sign-in', lang));

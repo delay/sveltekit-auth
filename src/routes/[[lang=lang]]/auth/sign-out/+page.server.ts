@@ -15,7 +15,7 @@ export const actions = {
 		await auth.invalidateSession(session.sessionId); // invalidate session
 		event.locals.auth.setSession(null); // remove cookie
 		const message = { type: 'success', message: m.loggedout() } as const;
-		redirect(302, translatePath('/auth/sign-in', event.locals.lang), message, event.cookies);
+		redirect(302, translatePath('/auth/sign-in', event.locals.lang, event.locals.defaultLang), message, event.cookies);
 		
 	}
 };

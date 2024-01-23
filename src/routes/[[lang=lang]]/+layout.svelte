@@ -6,13 +6,14 @@
 	import { Toaster } from '$lib/components/ui/sonner';
 	import { toast } from 'svelte-sonner';
 	import Navigation from '$lib/components/navigation/navigation.svelte';
-	import type { AvailableLanguageTag } from '$paraglide/runtime';
+	import { type AvailableLanguageTag } from '$paraglide/runtime';
+	import { defaultLanguage } from '$lib/i18n-routing';
 
 	export let data: any;
 	let user: Lucia.UserAttributes;
 	$: user = data.user;
 	let currLang: AvailableLanguageTag;
-	$: currLang = $page.params.lang || data.lang;
+	$: currLang = $page.params.lang as AvailableLanguageTag || defaultLanguage /* data.lang not updated ? */;
 	const flash = getFlash(page);
 	//$: console.log('+layout.svelte root flash: ' + JSON.stringify($flash));
 	$: if ($flash) {

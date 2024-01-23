@@ -10,10 +10,14 @@
 	import { goto } from '$app/navigation';
 
 	import * as m from "$paraglide/messages";
-	import { translatePath } from '$lib/i18n-routing';
+	import { defaultLanguage, translatePath } from '$lib/i18n-routing';
 	import type { PageData } from './$types';
+	import { page } from '$app/stores';
+	import type { AvailableLanguageTag } from '$paraglide/runtime';
 
 	export let data: PageData;
+
+	let lang = ($page.params.lang || defaultLanguage) as AvailableLanguageTag;
 
 	const profileSchema = userSchema.pick({
 		firstName: true,
@@ -76,7 +80,7 @@
 							{m.pleasewait()}{:else}{m.updateprofile()}{/if}
 					</Form.Button>
 					<div class="mt-6 text-center text-sm">
-						<Button on:click={() => goto(translatePath('/auth/password/reset', data.lang))} class="w-full" variant="outline"
+						<Button on:click={() => goto(translatePath('/auth/password/reset', lang))} class="w-full" variant="outline"
 							>{m.changepassword()}</Button
 						>
 					</div>

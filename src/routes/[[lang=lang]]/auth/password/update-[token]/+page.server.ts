@@ -63,7 +63,7 @@ export const actions = {
 			);
 		}
 		const token = event.params.token as string;
-		redirect(302, translatePath(`/auth/password/update-${token}/success`, event.locals.lang));
+		redirect(302, translatePath(`/auth/password/update-${token}/success`, event.locals.lang, event.locals.defaultLang));
 		//		return { form };
 	}
 };

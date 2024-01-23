@@ -3,12 +3,22 @@
 	import { page } from '$app/stores';
 	import { Button } from '$lib/components/ui/button';
 	import { APP_NAME } from '$lib/config/constants';
-	import { translatePath } from '$lib/i18n-routing';
+	import { defaultLanguage, translatePath } from '$lib/i18n-routing';
 	import * as m from "$paraglide/messages";
 	import { type AvailableLanguageTag, sourceLanguageTag } from '$paraglide/runtime';
+	import { SetIdentityMailFromDomainCommand } from '@aws-sdk/client-ses';
+	import { onMount, tick } from 'svelte';
 
+	const setIntro = (lang: AvailableLanguageTag) => {
+		return m.intro({}, {languageTag: currlang});
+	}
 	//let currlang: AvailableLanguageTag;
-	$: currlang = ($page.params.lang ?? sourceLanguageTag) as AvailableLanguageTag;
+	$: currlang = ($page.params.lang ?? defaultLanguage) as AvailableLanguageTag;
+	let introText = m.loading();
+
+	onMount(() => {
+		introText = setIntro(currlang);
+	});
 </script>
 
 <svelte:head>
@@ -25,9 +35,11 @@
 			<h1 class="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
 				{APP_NAME}
 			</h1>
+			{#key currlang}
 			<p class="max-w-[700px] text-lg text-muted-foreground">
-				{@html m.intro()}
+				{@html introText}
 			</p>
+			{/key}
 		</div>
 		<div class="flex gap-4">
 			<Button on:click={() => goto(translatePath('/auth/sign-in', currlang))}>{m.signin()}</Button>
