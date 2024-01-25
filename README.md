@@ -1,4 +1,10 @@
-# Sveltekit Auth
+---
+runme:
+  id: 01HMSXT8PNKSEGS0BXMSBHS5ZM
+  version: v2.2
+---
+
+# Sveltekit Auth + I18n
 
 ![Sveltekit Auth User Interface](https://github.com/delay/sveltekit-auth/assets/638246/3fbb5318-cf46-40ab-a33b-9660019beec8)
 
@@ -52,10 +58,9 @@ This was the first time working with many of these packages, but they really do 
 
 **/ui** - our shadcn ui components. Contains many components related to that.
 
-
 ## /config
 
-**constants.ts** — all of the public constants that do not need to be hidden server side. I prefer this to naming constants PUBLIC_WHATEVER in the .env file, which is another option. I prefer to keep my .env file with only server side env variables.
+__constants.ts__ — all of the public constants that do not need to be hidden server side. I prefer this to naming constants PUBLIC_WHATEVER in the .env file, which is another option. I prefer to keep my .env file with only server side env variables.
 
 **email-messages.ts** — this is where I keep all of the email messages that need to be sent. It makes it easier in case changes need to be made to the emails that are sent out.
 

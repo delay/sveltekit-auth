@@ -5,8 +5,8 @@ import { translatePath } from '$lib/i18n-routing';
 import * as m from '$paraglide/messages';
 
 // Send an email to verify the user's address
-export const sendVerificationEmail = async (email: string, token: string, lang: AvailableLanguageTag = sourceLanguageTag) => {
-	const verifyEmailURL = BASE_URL + translatePath(`	/auth/verify/email-${token}`, lang);
+export const sendVerificationEmail = async (email: string, token: string, lang: AvailableLanguageTag = sourceLanguageTag, defLang: AvailableLanguageTag = sourceLanguageTag) => {
+	const verifyEmailURL = BASE_URL + translatePath(`/auth/verify/email-${token}`, lang, defLang);
 	const textEmail = `${m.emailVerifyMsgVisitLink({appbase: APP_NAME})}.\n\n  
     ${verifyEmailURL} \n\n${m.emailVerifyMsgIfNotYou()}`;
 	const htmlEmail = `<p>${m.pleaseClickThis()} <a href="${verifyEmailURL}">link</a> ${m.emailVerifyMsgToVerify({app: APP_NAME})}.</p>  <p>${m.emailVerifyMsgAlsoVisit()}</p><p>${verifyEmailURL}</p><p>${m.emailVerifyMsgIfNotYou()}</p>`;
@@ -16,8 +16,8 @@ export const sendVerificationEmail = async (email: string, token: string, lang: 
 };
 
 // Send an email to welcome the new user
-export const sendWelcomeEmail = async (email: string, lang: AvailableLanguageTag = sourceLanguageTag) => {
-	const welcomeEmailURL = BASE_URL + translatePath(`/auth/sign-in`, lang);
+export const sendWelcomeEmail = async (email: string, lang: AvailableLanguageTag = sourceLanguageTag, defLang: AvailableLanguageTag = sourceLanguageTag) => {
+	const welcomeEmailURL = BASE_URL + translatePath(`/auth/sign-in`, lang, defLang);
 	const textEmail = `${m.emailWelcomeThanks({app: APP_NAME})}\n\n${welcomeEmailURL}`;
 	const htmlEmail = `<p>${m.emailWelcomeThanksOnly({app: APP_NAME})}</p><p>${m.youCanNow()} <a href="${welcomeEmailURL}">${m.signin()}</a> ${m.toYourAcc()}.</p>`;
 	const subject = `${m.emailWelcomeSubject({app: APP_NAME})}`;
@@ -26,8 +26,8 @@ export const sendWelcomeEmail = async (email: string, lang: AvailableLanguageTag
 };
 
 // Send an email to reset the user's password
-export const sendPasswordResetEmail = async (email: string, token: string, lang: AvailableLanguageTag = sourceLanguageTag) => {
-	const updatePasswordURL = BASE_URL + translatePath(`/auth/password/update-${token}`, lang);
+export const sendPasswordResetEmail = async (email: string, token: string, lang: AvailableLanguageTag = sourceLanguageTag, defLang: AvailableLanguageTag = sourceLanguageTag) => {
+	const updatePasswordURL = BASE_URL + translatePath(`/auth/password/update-${token}`, lang, defLang);
 	const textEmail = `${m.emailPwdResetVisitLink()} ${m.emailPwdResetToChange({app:APP_NAME})}.\n\n  
     ${updatePasswordURL} \n\n${m.emailPwdResetIfNotYou()}`;
 	const htmlEmail = `<p>${m.pleaseClickThis()} <a href="${updatePasswordURL}">link</a> ${m.emailPwdResetToChange({app:APP_NAME})}.</p>  
@@ -43,9 +43,10 @@ export const updateEmailAddressSuccessEmail = async (
 	email: string,
 	oldEmail: string,
 	token: string,
-	lang: AvailableLanguageTag = sourceLanguageTag
+	lang: AvailableLanguageTag = sourceLanguageTag,
+	defLang: AvailableLanguageTag = sourceLanguageTag
 ) => {
-	const verifyEmailURL = BASE_URL + translatePath(`/auth/verify/email-${token}`, lang);
+	const verifyEmailURL = BASE_URL + translatePath(`/auth/verify/email-${token}`, lang, defLang);
 	const textEmail = `${m.emailVerifyMsgVisitLink({appbase: APP_NAME})}\n\n  ${verifyEmailURL}`;
 	const htmlEmail = `<p>${m.pleaseClickThis()} <a href="${verifyEmailURL}">link</a> ${m.emailVerifyMsgToVerify({app: APP_NAME})}.</p>  <p>You can also visit the link below.</p><p>${verifyEmailURL}</p>`;
 	const subject = `${m.emailVerifyMsgConfirm({app: APP_NAME})}`;
