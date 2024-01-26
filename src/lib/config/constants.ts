@@ -2,7 +2,7 @@ import { dev } from '$app/environment';
 export const BASE_URL = dev ? 'http://localhost:5173' : 'https://sveltekit-auth-i18n.bomium.in.rs';
 export const APP_NAME = 'Sveltekit Auth+I18n';
 export const CONTACT_EMAIL = 'bmilosavljevic@gmail.com';
-export const DOMAIN = 'test1.bustravel.rs';
+export const DOMAIN = 'sveltekit-auth-i18n.bomium.in.rs';
 /* WARNING!!! TERMS AND CONDITIONS AND PRIVACY POLICY 
 WERE CREATED BY CHATGPT AS AN EXAMPLE ONLY. 
 CONSULT A LAWYER AND DEVELOP YOUR OWN TERMS AND PRIVACY POLICY!!! */
