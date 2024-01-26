@@ -33,7 +33,7 @@ export const sendPasswordResetEmail = async (email: string, token: string, lang:
 	const htmlEmail = `<p>${m.pleaseClickThis()} <a href="${updatePasswordURL}">link</a> ${m.emailPwdResetToChange({app:APP_NAME})}.</p>  
 	<p>${m.emailVerifyMsgAlsoVisit()}</p><p>${updatePasswordURL}</p><p>${m.emailPwdResetIfNotYou()}</p>`;
 	const subject = `${m.emailPwdResetSubject({app: APP_NAME})}`;
-	const resultSend = sendEmail(email, subject, htmlEmail, textEmail);
+	const resultSend = await sendEmail(email, subject, htmlEmail, textEmail);
 	return resultSend;
 };
 
