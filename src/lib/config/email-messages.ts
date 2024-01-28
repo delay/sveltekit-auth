@@ -50,11 +50,11 @@ export const updateEmailAddressSuccessEmail = async (
 	const textEmail = `${m.emailVerifyMsgVisitLink({appbase: APP_NAME})}\n\n  ${verifyEmailURL}`;
 	const htmlEmail = `<p>${m.pleaseClickThis()} <a href="${verifyEmailURL}">link</a> ${m.emailVerifyMsgToVerify({app: APP_NAME})}.</p>  <p>You can also visit the link below.</p><p>${verifyEmailURL}</p>`;
 	const subject = `${m.emailVerifyMsgConfirm({app: APP_NAME})}`;
-	sendEmail(email, subject, htmlEmail, textEmail);
+	await sendEmail(email, subject, htmlEmail, textEmail);
 
 	//send email to user about email change.
 	const textEmailChange = `${m.emailUpdateChangeEmail({app: APP_NAME, oldEmail, email, appbase: BASE_URL})}`;
 	const htmlEmailChange = `${m.emailUpdateChangeEmailHtml({app: APP_NAME, oldEmail, email, appbase: BASE_URL})}`;
 	const subjectChange = `${m.emailUpdateChangeSubject({app: APP_NAME})}`;
-	sendEmail(oldEmail, subjectChange, htmlEmailChange, textEmailChange);
+	await sendEmail(oldEmail, subjectChange, htmlEmailChange, textEmailChange);
 };
