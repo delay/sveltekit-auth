@@ -2,19 +2,19 @@
 
 ![Sveltekit Auth User Interface](https://github.com/delay/sveltekit-auth/assets/638246/3fbb5318-cf46-40ab-a33b-9660019beec8)
 
-This is a Sveltekit Auth Project. An example website is currently deployed [here](https://sveltekit-auth-alpha.vercel.app). It is an open source auth starter project utilizing [Lucia](https://lucia-auth.com/) for authentication, [shadcn-svelte](https://www.shadcn-svelte.com/) for ui elements, [Lucide](https://lucide.dev) for icons, [Prisma](https://www.prisma.io) for database connectivity and type safety and [Sveltekit](https://kit.svelte.dev) for the javascript framework. I also used [Zod](https://zod.dev) and [Superforms](https://superforms.vercel.app) to handle form validation and management. It has email verification, password reset, and will send an email if the user changes their email address to re-verify it. It is released as open source under an MIT license.
+This is a Sveltekit Auth Project. An example website is currently deployed [here](https://sveltekit-auth-alpha.vercel.app). It is an open source auth starter project utilizing [Lucia](https://lucia-auth.com/) for authentication, [shadcn-svelte](https://www.shadcn-svelte.com/) for ui elements, [Lucide](https://lucide.dev) for icons, [Drizzle](https://orm.drizzle.team/) for database connectivity and type safety and [Sveltekit](https://kit.svelte.dev) for the javascript framework. I also used [Zod](https://zod.dev) and [Superforms](https://superforms.vercel.app) to handle form validation and management. It has email verification, password reset, and will send an email if the user changes their email address to re-verify it. It is released as open source under an MIT license.
 
 While creating this project, I made use of several great videos and tutorials from [Huntabyte](https://www.youtube.com/@huntabyte) (who also developed the svelte port for shadcn) and [Joy of Code](https://www.youtube.com/@JoyofCodeDev). Both have great tutorials for all things related to Sveltekit.
 
 This project creates an email and password user log in system and is my attempt to make something production ready with all of the usual features you expect. You can create new users and sign them in. It has user roles. It will verify a users email address. You can edit your profile including changing your email address and password. You can reset your password in case you forgot it. You can also change themes and have a light and dark mode. I didn’t see any examples utilizing these frameworks that had all of these necessary features.
 
-It has a logging system for errors which I have tracked in Axiom.  I wrote a separate article about the logging system [here](https://jeffmcmorris.medium.com/awesome-logging-in-sveltekit-6afa29c5892c).
+It has a logging system for errors which I have tracked in Axiom. I wrote a separate article about the logging system [here](https://jeffmcmorris.medium.com/awesome-logging-in-sveltekit-6afa29c5892c).
 
 I picked [Lucia](https://lucia-auth.com/) for auth because it had great documentation and seemed to be in active development and was very full featured. It can provide authentication for OAuth providers as well. I always want to have a fallback for email and password, so that is what I chose to make for this project.
 
 [shadcn-svelte](https://www.shadcn-svelte.com/) is another great project with a really nice development experience. It has beautiful ui elements that are very easy to use.
 
-[Prisma](https://www.prisma.io) is another great package and it is used for database connectivity and type safety. It works with many databases so it’s easy to change your database with one line of code. It has an easy to use ORM that cuts back on the amount of code you need to write.
+[Drizzle](https://orm.drizzle.team/) is another great package and it is used for database connectivity and type safety. It works with many databases so it’s easy to change your database. It has an easy to use ORM that cuts back on the amount of code you need to write. There are some special commands added into package.json you can do an "npm run generate", "npm run migrate", and "npm run studio". These commands are for upgrading and migrating your database with drizzle. The studio one gives you a ui to access your database.
 
 [Zod](https://zod.dev) is a typescript schema validation that allows you to easily validate your input in projects. It is very easy to setup what your data should look like to validate against.
 
@@ -28,15 +28,11 @@ This was the first time working with many of these packages, but they really do 
 
 **sample.env** — private environmental server side variables that must be set. Rename to.env and supply your personal project settings.
 
-**/prisma/schema.prisma** — holds the prism schema which is the design of your data in the app and db. Currently holds the auth schema for Lucia auth.
-
 ## **/src/**
 
 **app.d.ts** — holds type definitions for lucia and can hold your additional types for other features.
 
-**hooks.server.ts** — holds a Lucia auth handle function.
-
-**theme.postcss** — holds a custom theme for skeleton. This can be set in /routes/+layout.svelte. Comment out the theme-skeleton and add in theme.postcss. You can create your own custom theme [https://www.skeleton.dev/docs/generator](https://www.skeleton.dev/docs/generator). There are also lots of premade themes included with sveltekit. To use those, change theme-skeleton.css to theme-modern.css or another theme name.
+**hooks.server.ts** — holds a Lucia auth handle function and functions for the logging machanism.
 
 ## /lib
 
@@ -52,14 +48,11 @@ This was the first time working with many of these packages, but they really do 
 
 **/ui** - our shadcn ui components. Contains many components related to that.
 
-
 ## /config
 
 **constants.ts** — all of the public constants that do not need to be hidden server side. I prefer this to naming constants PUBLIC_WHATEVER in the .env file, which is another option. I prefer to keep my .env file with only server side env variables.
 
 **email-messages.ts** — this is where I keep all of the email messages that need to be sent. It makes it easier in case changes need to be made to the emails that are sent out.
-
-**prima.ts —** file used to initialize the prisma client.
 
 **zod-schemas.ts** — holds the schema used in zod. This defines how our form data needs to be validated.
 
@@ -70,6 +63,20 @@ This was the first time working with many of these packages, but they really do 
 **lucia.ts**\- this initializes the lucia-auth package for handling our auth functions. It also holds the extra custom fields we added to the user.
 
 **log.ts**\- special log routine to provide debug info about our app.
+
+## /server/database
+
+**drizzle-schemas.ts** your drizzle schema. The structure for your database tables.
+
+**drizzle.ts** your drizzle db connection info to connect with your database.
+
+**migrate.ts** a special file which you creates your migrations when your db changes.
+
+**user-model.ts** are the functions used to call the database for auth having to do with users.
+
+## /server/database/migrations
+
+This is the storage location for your migration files. It is created and maintained automatically by drizzle. Do not manually edit these files!
 
 ## /routes
 

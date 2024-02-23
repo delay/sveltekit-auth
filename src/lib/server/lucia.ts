@@ -1,39 +1,54 @@
 // lib/server/lucia.ts
-import { lucia } from 'lucia';
-import { sveltekit } from 'lucia/middleware';
-//import { pg } from '@lucia-auth/adapter-postgresql';
-//import postgres from 'pg';
-//import { DATABASE_URL } from '$env/static/private';
-
-import { prisma } from '@lucia-auth/adapter-prisma';
-import { PrismaClient } from '@prisma/client';
+import { Lucia, TimeSpan } from 'lucia';
+import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
+import { userTable, sessionTable } from '$lib/server/database/drizzle-schemas';
+import db from '$lib/server/database/drizzle';
 import { dev } from '$app/environment';
 
-/*const pool = new postgres.Pool({
-	connectionString: DATABASE_URL
-});*/
+const adapter = new DrizzlePostgreSQLAdapter(db, sessionTable, userTable);
 
-export const auth = lucia({
-	adapter: prisma(new PrismaClient(), {
-		user: 'authUser',
-		key: 'authKey',
-		session: 'authSession'
-	}),
-	//adapter: pg(pool),
-	env: dev ? 'DEV' : 'PROD',
-	middleware: sveltekit(),
-	getUserAttributes: (data) => {
+export const lucia = new Lucia(adapter, {
+	sessionCookie: {
+		name: 'session',
+		expires: false, // session cookies have very long lifespan (2 years)
+		attributes: {
+			secure: !dev
+		}
+	},
+	sessionExpiresIn: new TimeSpan(30, 'd'), // no more active/idle
+	getUserAttributes: (attributes) => {
 		return {
-			userId: data.id,
-			email: data.email,
-			firstName: data.firstName,
-			lastName: data.lastName,
-			role: data.role,
-			verified: data.verified,
-			receiveEmail: data.receiveEmail,
-			token: data.token
+			userId: attributes.id,
+			email: attributes.email,
+			firstName: attributes.firstName,
+			lastName: attributes.lastName,
+			role: attributes.role,
+			verified: attributes.verified,
+			receiveEmail: attributes.receiveEmail,
+			token: attributes.token
 		};
 	}
 });
 
-export type Auth = typeof auth;
+declare module 'lucia' {
+	interface Register {
+		Lucia: typeof lucia;
+		DatabaseUserAttributes: DatabaseUserAttributes;
+		//DatabaseSessionAttributes: DatabaseSessionAttributes;
+	}
+}
+
+interface DatabaseUserAttributes {
+	id: string;
+	email: string;
+	firstName: string;
+	lastName: string;
+	role: string;
+	verified: boolean;
+	receiveEmail: boolean;
+	token: string;
+}
+
+/*interface DatabaseSessionAttributes {
+	sessionExpiresIn: number;
+}*/

@@ -1,9 +1,8 @@
 import { fail, redirect } from '@sveltejs/kit';
 import { setError, superValidate } from 'sveltekit-superforms/server';
 import { userUpdatePasswordSchema } from '$lib/config/zod-schemas';
-import { auth } from '$lib/server/lucia';
-import prisma from '$lib/config/prisma';
-
+import { getUserByToken, updateUser } from '$lib/server/database/user-model.js';
+import { Argon2id } from 'oslo/password';
 export const load = async (event) => {
 	const form = await superValidate(event, userUpdatePasswordSchema);
 	return {
@@ -14,7 +13,6 @@ export const load = async (event) => {
 export const actions = {
 	default: async (event) => {
 		const form = await superValidate(event, userUpdatePasswordSchema);
-		//console.log(form);
 
 		if (!form.valid) {
 			return fail(400, {
@@ -22,31 +20,19 @@ export const actions = {
 			});
 		}
 
-		//add user to db
 		try {
 			const token = event.params.token as string;
 			console.log('update user password');
 			const newToken = crypto.randomUUID();
 			//get email from token
-			const user = await prisma.authUser.findUnique({
-				where: {
-					token: token
-				}
-			});
+			const user = await getUserByToken(token);
 
-			if (user?.email) {
-				await auth.updateKeyPassword('email', user.email, form.data.password);
+			if (user) {
+				const password = await new Argon2id().hash(form.data.password);
 				// need to update with new token because token is also used for verification
 				// and needs a new verification token in case user has not verified their account
 				// and already forgot their password before verifying. Now they can get a new one resent.
-				await prisma.authUser.update({
-					where: {
-						token: token
-					},
-					data: {
-						token: newToken
-					}
-				});
+				await updateUser(user.id, { token: newToken, password: password });
 			} else {
 				return setError(
 					form,

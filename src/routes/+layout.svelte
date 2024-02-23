@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { PageData } from './$types';
 	import '../app.pcss';
 	import { page } from '$app/stores';
 	import { ModeWatcher } from 'mode-watcher';
@@ -8,7 +9,7 @@
 	import Navigation from '$lib/components/navigation/navigation.svelte';
 
 	export let data: any;
-	let user: Lucia.UserAttributes;
+	let user: PageData['user'];
 	$: user = data.user;
 	const flash = getFlash(page);
 	//$: console.log('+layout.svelte root flash: ' + JSON.stringify($flash));

@@ -2,7 +2,7 @@ import { fail, redirect } from '@sveltejs/kit';
 import { setError, superValidate } from 'sveltekit-superforms/server';
 import { userSchema } from '$lib/config/zod-schemas';
 import { sendPasswordResetEmail } from '$lib/config/email-messages';
-import prisma from '$lib/config/prisma';
+import { getUserByEmail, updateUser } from '$lib/server/database/user-model.js';
 
 const resetPasswordSchema = userSchema.pick({ email: true });
 
@@ -16,7 +16,6 @@ export const load = async (event) => {
 export const actions = {
 	default: async (event) => {
 		const form = await superValidate(event, resetPasswordSchema);
-		//console.log(form);
 
 		if (!form.valid) {
 			return fail(400, {
@@ -24,19 +23,14 @@ export const actions = {
 			});
 		}
 
-		//add user to db
 		try {
+			const user = await getUserByEmail(form.data.email);
+			if (!user) {
+				return setError(form, 'The email address does not have an account.');
+			}
 			console.log('reset user password');
 			const token = crypto.randomUUID();
-			await prisma.authUser.update({
-				where: {
-					email: form.data.email
-				},
-				data: {
-					token: token
-				}
-			});
-
+			await updateUser(user.id, { token: token });
 			await sendPasswordResetEmail(form.data.email, token);
 		} catch (e) {
 			console.error(e);
@@ -46,6 +40,5 @@ export const actions = {
 			);
 		}
 		redirect(302, '/auth/password/reset/success');
-		//		return { form };
 	}
 };

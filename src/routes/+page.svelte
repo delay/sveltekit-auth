@@ -25,7 +25,7 @@
 				utilizing
 				<a href="https://lucia-auth.com/" class="underline">Lucia</a> for authentication,
 				<a href="https://www.shadcn-svelte.com" class="underline">shadcn-svelte</a> for ui elements,
-				<a href="https://www.prisma.io/" class="underline">Prisma</a>
+				<a href="https://orm.drizzle.team/" class="underline">Drizzle</a>
 				for database connectivity and type safety,
 				<a href="https://lucide.dev/" class="underline">Lucide</a>
 				for icons, <a href="https://superforms.rocks/" class="underline">Superforms</a>

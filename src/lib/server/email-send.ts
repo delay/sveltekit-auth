@@ -25,7 +25,7 @@ export default async function sendEmail(
 						accessKeyId: AWS_ACCESS_KEY_ID || '',
 						secretAccessKey: AWS_SECRET_ACCESS_KEY || ''
 					}
-			  }
+				}
 			: {})
 	});
 
@@ -33,12 +33,6 @@ export default async function sendEmail(
 	const transporter = nodemailer.createTransport({
 		SES: { ses, aws }
 	});
-
-	interface MailConfig {
-		recipient: string;
-		subject: string;
-		htmlMessage: string;
-	}
 
 	try {
 		if (!bodyText) {
@@ -49,7 +43,7 @@ export default async function sendEmail(
 					subject: subject,
 					html: bodyHtml
 				},
-				(err, info) => {
+				(err) => {
 					if (err) {
 						throw new Error(`Error sending email: ${JSON.stringify(err)}`);
 					}
@@ -63,7 +57,7 @@ export default async function sendEmail(
 					subject: subject,
 					text: bodyText
 				},
-				(err, info) => {
+				(err) => {
 					if (err) {
 						throw new Error(`Error sending email: ${JSON.stringify(err)}`);
 					}
@@ -78,7 +72,7 @@ export default async function sendEmail(
 					html: bodyHtml,
 					text: bodyText
 				},
-				(err, info) => {
+				(err) => {
 					if (err) {
 						throw new Error(`Error sending email: ${JSON.stringify(err)}`);
 					}
