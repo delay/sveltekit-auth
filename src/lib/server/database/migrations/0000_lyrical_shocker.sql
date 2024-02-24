@@ -6,6 +6,8 @@ CREATE TABLE IF NOT EXISTS "sessions" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "users" (
 	"id" text PRIMARY KEY NOT NULL,
+	"provider" text DEFAULT 'email' NOT NULL,
+	"provider_id" text DEFAULT '' NOT NULL,
 	"email" text NOT NULL,
 	"first_name" text NOT NULL,
 	"last_name" text NOT NULL,
@@ -14,8 +16,8 @@ CREATE TABLE IF NOT EXISTS "users" (
 	"receive_email" boolean DEFAULT true NOT NULL,
 	"password" text,
 	"token" text,
-	"created_at" text DEFAULT 'now()' NOT NULL,
-	"updated_at" text DEFAULT 'now()' NOT NULL,
+	"created_at" timestamp with time zone NOT NULL,
+	"updated_at" timestamp with time zone NOT NULL,
 	CONSTRAINT "users_email_unique" UNIQUE("email"),
 	CONSTRAINT "users_token_unique" UNIQUE("token")
 );

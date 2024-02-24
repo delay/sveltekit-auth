@@ -1,5 +1,5 @@
 {
-  "id": "e92b4159-48c7-4fbb-9ad5-45aae1306fd0",
+  "id": "c6600896-fd73-4f43-bcac-91d4d700c450",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -56,6 +56,20 @@
           "primaryKey": true,
           "notNull": true
         },
+        "provider": {
+          "name": "provider",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'email'"
+        },
+        "provider_id": {
+          "name": "provider_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
         "email": {
           "name": "email",
           "type": "text",
@@ -109,17 +123,15 @@
         },
         "created_at": {
           "name": "created_at",
-          "type": "text",
+          "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": true,
-          "default": "'now()'"
+          "notNull": true
         },
         "updated_at": {
           "name": "updated_at",
-          "type": "text",
+          "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": true,
-          "default": "'now()'"
+          "notNull": true
         }
       },
       "indexes": {},
