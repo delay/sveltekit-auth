@@ -12,8 +12,14 @@ export const userTable = pgTable('users', {
 	receiveEmail: boolean('receive_email').notNull().default(true),
 	password: text('password'),
 	token: text('token').unique(),
-	createdAt: text('created_at').default(new Date().toISOString()),
-	updatedAt: text('updated_at').default(new Date().toISOString())
+	createdAt: timestamp('created_at', {
+		withTimezone: true,
+		mode: 'date'
+	}).notNull(),
+	updatedAt: timestamp('updated_at', {
+		withTimezone: true,
+		mode: 'date'
+	}).notNull()
 });
 
 export const sessionTable = pgTable('sessions', {
