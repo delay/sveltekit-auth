@@ -1,4 +1,3 @@
-// src/app.d.ts
 declare global {
 	namespace App {
 		interface Locals {
@@ -21,6 +20,4 @@ declare global {
 	}
 }
 
-
-// THIS IS IMPORTANT!!!
 export {};

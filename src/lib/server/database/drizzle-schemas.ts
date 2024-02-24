@@ -2,6 +2,8 @@ import { pgTable, text, timestamp, boolean } from 'drizzle-orm/pg-core';
 
 export const userTable = pgTable('users', {
 	id: text('id').notNull().primaryKey(),
+	provider: text('provider').notNull().default('email'),
+	providerId: text('provider_id').notNull().default(''),
 	email: text('email').notNull().unique(),
 	firstName: text('first_name').notNull(),
 	lastName: text('last_name').notNull(),
@@ -10,8 +12,8 @@ export const userTable = pgTable('users', {
 	receiveEmail: boolean('receive_email').notNull().default(true),
 	password: text('password'),
 	token: text('token').unique(),
-	createdAt: text('created_at').notNull().default('now()'),
-	updatedAt: text('updated_at').notNull().default('now()')
+	createdAt: text('created_at').default(new Date().toISOString()),
+	updatedAt: text('updated_at').default(new Date().toISOString())
 });
 
 export const sessionTable = pgTable('sessions', {

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import * as Form from '$lib/components/ui/form';
 	import * as Card from '$lib/components/ui/card';
 
@@ -7,7 +8,7 @@
 	import type { SuperValidated } from 'sveltekit-superforms';
 	import { Loader2 } from 'lucide-svelte';
 	import { AlertCircle } from 'lucide-svelte';
-
+	import { Button } from '$lib/components/ui/button';
 	const signUpSchema = userSchema.pick({
 		firstName: true,
 		lastName: true,
@@ -21,6 +22,7 @@
 	export let form: SuperValidated<SignUpSchema>;
 </script>
 
+<Button on:click={() => goto('/auth/oauth/google')}>Sign up with Google</Button>
 <div class="flex items-center justify-center mx-auto max-w-2xl">
 	<Form.Root let:submitting let:errors method="POST" {form} schema={signUpSchema} let:config>
 		<Card.Root>

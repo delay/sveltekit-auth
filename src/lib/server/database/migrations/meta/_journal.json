@@ -8,6 +8,20 @@
       "when": 1708626532918,
       "tag": "0000_charming_power_pack",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1708724595807,
+      "tag": "0001_real_shaman",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1708724933297,
+      "tag": "0002_square_moira_mactaggert",
+      "breakpoints": true
     }
   ]
 }

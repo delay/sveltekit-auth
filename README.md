@@ -10,7 +10,7 @@ This project creates an email and password user log in system and is my attempt 
 
 It has a logging system for errors which I have tracked in Axiom. I wrote a separate article about the logging system [here](https://jeffmcmorris.medium.com/awesome-logging-in-sveltekit-6afa29c5892c).
 
-I picked [Lucia](https://lucia-auth.com/) for auth because it had great documentation and seemed to be in active development and was very full featured. It can provide authentication for OAuth providers as well. I always want to have a fallback for email and password, so that is what I chose to make for this project.
+I picked [Lucia](https://lucia-auth.com/) for auth because it had great documentation and seemed to be in active development and was very full featured. It can provide authentication for OAuth providers as well. I always want to have a fallback for email and password, so that is what I chose to make for this project. I also provide a google oauth login example. Depending on your hosting you may need to add a polyfill for crypto. See more [here](https://arctic.js.org/).
 
 [shadcn-svelte](https://www.shadcn-svelte.com/) is another great project with a really nice development experience. It has beautiful ui elements that are very easy to use.
 
@@ -27,6 +27,7 @@ This was the first time working with many of these packages, but they really do 
 ## File Structure for the App
 
 **sample.env** — private environmental server side variables that must be set. Rename to.env and supply your personal project settings.
+**drizzle.config.ts** - variables for running dribble schemas and migrations.
 
 ## **/src/**
 
@@ -69,8 +70,6 @@ This was the first time working with many of these packages, but they really do 
 **drizzle-schemas.ts** your drizzle schema. The structure for your database tables.
 
 **drizzle.ts** your drizzle db connection info to connect with your database.
-
-**migrate.ts** a special file which you creates your migrations when your db changes.
 
 **user-model.ts** are the functions used to call the database for auth having to do with users.
 
