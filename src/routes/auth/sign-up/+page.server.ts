@@ -50,7 +50,9 @@ export const actions = {
 				role: 'USER',
 				verified: false,
 				receiveEmail: true,
-				token: token
+				token: token,
+				createdAt: new Date(),
+				updatedAt: new Date()
 			};
 			const newUser = await createUser(user);
 			if (newUser) {
