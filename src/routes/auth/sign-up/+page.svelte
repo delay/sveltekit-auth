@@ -22,7 +22,7 @@
 	export let form: SuperValidated<SignUpSchema>;
 </script>
 
-<Button on:click={() => goto('/auth/oauth/google')}>Sign up with Google</Button>
+<!--<Button on:click={() => goto('/auth/oauth/google')}>Sign up with Google</Button>-->
 <div class="flex items-center justify-center mx-auto max-w-2xl">
 	<Form.Root let:submitting let:errors method="POST" {form} schema={signUpSchema} let:config>
 		<Card.Root>
