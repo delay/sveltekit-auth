@@ -3,10 +3,10 @@ import { setFlash } from 'sveltekit-flash-message/server';
 import { setError, superValidate } from 'sveltekit-superforms/server';
 import { Argon2id } from 'oslo/password';
 import { lucia } from '$lib/server/lucia';
-import { createUser } from '$lib/server/database/user-model';
-
+import { createUser, updateUser } from '$lib/server/database/user-model';
 import { userSchema } from '$lib/config/zod-schemas';
 import { sendVerificationEmail } from '$lib/config/email-messages';
+import { SIGNG_UP_MODE } from '$env/static/private';
 
 const signUpSchema = userSchema.pick({
 	firstName: true,
@@ -56,20 +56,32 @@ export const actions = {
 			};
 			const newUser = await createUser(user);
 			if (newUser) {
-				await sendVerificationEmail(newUser.email, token);
+				if (SIGNG_UP_MODE == 'direct') {
+					await updateUser(user.id, { verified: true });
+					setFlash(
+						{
+							type: 'success',
+							message: 'Account created.'
+						},
+						event
+					);
+				} else {
+					await sendVerificationEmail(newUser.email, token);
+					setFlash(
+						{
+							type: 'success',
+							message: 'Account created. Please check your email to verify your account.'
+						},
+						event
+					);
+				}
+
 				const session = await lucia.createSession(newUser.id, {});
 				const sessionCookie = lucia.createSessionCookie(session.id);
 				event.cookies.set(sessionCookie.name, sessionCookie.value, {
 					path: '.',
 					...sessionCookie.attributes
 				});
-				setFlash(
-					{
-						type: 'success',
-						message: 'Account created. Please check your email to verify your account.'
-					},
-					event
-				);
 			}
 		} catch (e) {
 			console.error(e);
