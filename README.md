@@ -26,8 +26,9 @@ This was the first time working with many of these packages, but they really do 
 
 ## File Structure for the App
 
-**sample.env** — private environmental server side variables that must be set. Rename to.env and supply your personal project settings.
-**drizzle.config.ts** - variables for running dribble schemas and migrations.
+**sample.env** — private environmental server side variables that must be set. Rename to .env and supply your personal project settings.
+
+**drizzle.config.ts** - variables for running Drizzle schemas and migrations.
 
 ## **/src/**
 
