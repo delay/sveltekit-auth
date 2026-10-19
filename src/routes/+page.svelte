@@ -59,6 +59,12 @@
 			<p>La priorité c’est aussi de faire connaître OpenProduct en diffusant des tracts aux producteurs et intermédiaires pour qu’ils nous fassent connaître auprès de leurs clients.</p>
 			<p>Nous avons le projet de créer un label pour mettre un peu plus en valeur les producteurs qui jouent la carte de la transparence. Il permet au consommateur d'avoir une certaine garantie que la production soit réellement locale. En effet, certains peuvent être tentés d'importer les produits et de ne faire localement qu'une infime partie du travail.</p>
 		</div>
+		<div class="flex justify-end space-x-4">
+			<a href="https://openproduct.fr/wiki/"
+					class="btn variant-filled-primary min-w-32">
+				En savoir plus
+			</a>
+		</div>
 	</section>
 </div>
 

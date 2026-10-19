@@ -7,6 +7,7 @@ import { dev } from '$app/environment';
 import { Google } from 'arctic';
 import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from '$env/static/private';
 import { resolve } from '$app/paths';
+import { BASE_URL } from '$lib/config/constants';
 
 const adapter = new DrizzlePostgreSQLAdapter(db, sessionTable, userTable);
 
@@ -62,7 +63,9 @@ interface DatabaseUserAttributes {
 	sessionExpiresIn: number;
 }*/
 
-const googleRedirectUrl = resolve(`/auth/oauth/google/callback`);
+// Google requires an absolute redirect URI. `resolve()` provides the path
+// including the production base path (e.g. /new), `BASE_URL` adds the origin.
+const googleRedirectUrl = `${BASE_URL}${resolve('/auth/oauth/google/callback')}`;
 
 export const googleOauth = new Google(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, googleRedirectUrl);
 

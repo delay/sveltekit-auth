@@ -2,6 +2,7 @@
 	import { enhance } from '$app/forms';
 	import { Loader, CircleAlert } from 'lucide-svelte';
 	import { resolve } from '$app/paths';
+	import GoogleIcon from '$lib/components/icons/GoogleIcon.svelte';
 
 	interface Props {
 		form?: {
@@ -96,6 +97,20 @@
 				{/if}
 			</button>
 		</form>
+
+		<div class="my-6 flex items-center gap-4">
+			<span class="h-px flex-1 bg-surface-300-600-token"></span>
+			<span class="text-xs uppercase text-surface-600-300-token">ou</span>
+			<span class="h-px flex-1 bg-surface-300-600-token"></span>
+		</div>
+
+		<a
+			href={resolve('/auth/oauth/google')}
+			class="btn variant-soft-surface w-full flex items-center justify-center gap-2"
+		>
+			<GoogleIcon class="h-5 w-5" />
+			Continuer avec Google
+		</a>
 
 		<footer class="card-footer text-center mt-6">
 			<p class="text-surface-600-300-token">
