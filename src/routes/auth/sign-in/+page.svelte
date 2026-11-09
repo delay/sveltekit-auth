@@ -3,6 +3,8 @@
 	import { Loader, CircleAlert } from 'lucide-svelte';
 	import { resolve } from '$app/paths';
 	import GoogleIcon from '$lib/components/icons/GoogleIcon.svelte';
+	import FacebookIcon from '$lib/components/icons/FacebookIcon.svelte';
+	import AppleIcon from '$lib/components/icons/AppleIcon.svelte';
 
 	interface Props {
 		form?: {
@@ -110,6 +112,20 @@
 		>
 			<GoogleIcon class="h-5 w-5" />
 			Continuer avec Google
+		</a>
+		<a
+			href={resolve('/auth/oauth/facebook')}
+			class="btn variant-soft-surface w-full flex items-center justify-center gap-2"
+		>
+			<FacebookIcon class="h-5 w-5" />
+			Continuer avec Facebook
+		</a>
+		<a
+			href={resolve('/auth/oauth/apple')}
+			class="btn variant-soft-surface w-full flex items-center justify-center gap-2"
+		>
+			<AppleIcon class="h-5 w-5" />
+			Continuer avec Apple
 		</a>
 
 		<footer class="card-footer text-center mt-6">
