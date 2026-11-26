@@ -25,7 +25,7 @@
 			<Navigation.Tile label="Mon Profil" href={resolve("/dashboard")}><IconUserEdit /></Navigation.Tile>
 			<Navigation.Tile label="Deconnexion" onclick={signOut}><IconPlug /></Navigation.Tile>
 		{:else}
-			<Navigation.Tile label="Connection" href={resolve("/auth/sign-in")}><IconPlug /></Navigation.Tile>
+			<Navigation.Tile label="Connexion" href={resolve("/auth/sign-in")}><IconPlug /></Navigation.Tile>
 		{/if}
       <Navigation.Tile labelExpanded="A propos" href={resolve("/about")} title="settings"><IconSettings /></Navigation.Tile>
     {/snippet}

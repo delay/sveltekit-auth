@@ -4,7 +4,7 @@
 	import { resolve } from '$app/paths';
 	import GoogleIcon from '$lib/components/icons/GoogleIcon.svelte';
 	import FacebookIcon from '$lib/components/icons/FacebookIcon.svelte';
-	import AppleIcon from '$lib/components/icons/AppleIcon.svelte';
+	import MicrosoftIcon from '$lib/components/icons/MicrosoftIcon.svelte';
 
 	interface Props {
 		form?: {
@@ -62,8 +62,8 @@
 				<input 
 					class="input {formData.errors.email ? 'input-error' : ''}" 
 					type="email" 
-					name="email" 
-					placeholder="m@example.com"
+				name="email" 
+				placeholder="m@example.com"
 					value={formData.data.email}
 					required
 				/>
@@ -100,6 +100,17 @@
 			</button>
 		</form>
 
+		<div class="">
+			<p class="text-surface-600-300-token">
+				Mot de passe oublié ?
+				<a href="{resolve("/auth/password/reset")}" class="anchor">Renvoyer</a>
+			</p>
+			<p class="text-surface-600-300-token">
+				Pas encore de compte ?
+				<a href="{resolve("/auth/sign-up")}" class="anchor">S'inscrire</a>
+			</p>
+		</div>
+
 		<div class="my-6 flex items-center gap-4">
 			<span class="h-px flex-1 bg-surface-300-600-token"></span>
 			<span class="text-xs uppercase text-surface-600-300-token">ou</span>
@@ -121,22 +132,11 @@
 			Continuer avec Facebook
 		</a>
 		<a
-			href={resolve('/auth/oauth/apple')}
+			href={resolve('/auth/oauth/microsoft')}
 			class="btn variant-soft-surface w-full flex items-center justify-center gap-2"
 		>
-			<AppleIcon class="h-5 w-5" />
-			Continuer avec Apple
+			<MicrosoftIcon class="h-5 w-5" />
+			Continuer avec Microsoft
 		</a>
-
-		<footer class="card-footer text-center mt-6">
-			<p class="text-surface-600-300-token">
-				Mot de passe oublié ?
-				<a href="{resolve("/auth/password/reset")}" class="anchor">Renvoyer</a>
-			</p>
-			<p class="text-surface-600-300-token">
-				Pas encore de compte ?
-				<a href="{resolve("/auth/sign-up")}" class="anchor">S'inscrire</a>
-			</p>
-		</footer>
 	</div>
 </div>

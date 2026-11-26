@@ -3,13 +3,15 @@ using TOML
 using Memoization
 
 ENV=""
-conffile = "../.env.local"
-if isfile(conffile)
+ENV_FILE = "../.env.local"
+println("Define ENV_FILE")
+if isfile(ENV_FILE)
 	println("Development environment")
 	ENV="dev"
 else
 	println("Production environment")
 	ENV="prod"
+	ENV_FILE = ".env"
 end
 
 CURDIR=pwd()

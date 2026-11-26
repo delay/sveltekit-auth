@@ -64,7 +64,7 @@ export async function load(event) {
 			const session = await lucia.createSession(existingUser.id, {});
 			const sessionCookie = lucia.createSessionCookie(session.id);
 			event.cookies.set(sessionCookie.name, sessionCookie.value, {
-				path: '.',
+				path: '/',
 				...sessionCookie.attributes
 			});
 		} else {
@@ -94,7 +94,7 @@ export async function load(event) {
 				const session = await lucia.createSession(newUser.id, {});
 				const sessionCookie = lucia.createSessionCookie(session.id);
 				event.cookies.set(sessionCookie.name, sessionCookie.value, {
-					path: '.',
+					path: '/',
 					...sessionCookie.attributes
 				});
 				setFlash(

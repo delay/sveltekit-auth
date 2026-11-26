@@ -4,7 +4,7 @@
 	import { resolve } from '$app/paths';
 	import GoogleIcon from '$lib/components/icons/GoogleIcon.svelte';
 	import FacebookIcon from '$lib/components/icons/FacebookIcon.svelte';
-	import AppleIcon from '$lib/components/icons/AppleIcon.svelte';
+	import MicrosoftIcon from '$lib/components/icons/MicrosoftIcon.svelte';
 
 	interface Props {
 		form?: {
@@ -180,11 +180,11 @@
 			S'inscrire avec Facebook
 		</a>
 		<a
-			href={resolve('/auth/oauth/apple')}
+			href={resolve('/auth/oauth/microsoft')}
 			class="btn variant-soft-surface w-full flex items-center justify-center gap-2"
 		>
-			<AppleIcon class="h-5 w-5" />
-			S'inscrire avec Apple
+			<MicrosoftIcon class="h-5 w-5" />
+			S'inscrire avec Microsoft
 		</a>
 	</div>
 </div>

@@ -4,16 +4,15 @@ import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
 import { userTable, sessionTable } from '$lib/server/database/drizzle-schemas';
 import db from '$lib/server/database/drizzle';
 import { dev } from '$app/environment';
-import { Google, Facebook, Apple } from 'arctic';
+import { Google, Facebook, MicrosoftEntraId } from 'arctic';
 import {
 	GOOGLE_CLIENT_ID,
 	GOOGLE_CLIENT_SECRET,
 	FACEBOOK_CLIENT_ID,
 	FACEBOOK_CLIENT_SECRET,
-	APPLE_CLIENT_ID,
-	APPLE_TEAM_ID,
-	APPLE_KEY_ID,
-	APPLE_CERTIFICATE
+	MICROSOFT_TENANT_ID,
+	MICROSOFT_CLIENT_ID,
+	MICROSOFT_CLIENT_SECRET
 } from '$env/static/private';
 import { resolve } from '$app/paths';
 import { BASE_URL } from '$lib/config/constants';
@@ -74,18 +73,15 @@ interface DatabaseUserAttributes {
 
 const googleRedirectUrl = `${BASE_URL}${resolve('/auth/oauth/google/callback')}`;
 const facebookRedirectUrl = `${BASE_URL}${resolve('/auth/oauth/facebook/callback')}`;
-const appleRedirectUrl = `${BASE_URL}${resolve('/auth/oauth/apple/callback')}`;
+const microsoftRedirectUrl = `${BASE_URL}${resolve('/auth/oauth/microsoft/callback')}`;
 
 export const googleOauth = new Google(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, googleRedirectUrl);
 export const facebookOauth = new Facebook(FACEBOOK_CLIENT_ID, FACEBOOK_CLIENT_SECRET, facebookRedirectUrl);
 
-// Apple requires the private key (PKCS8) as a Uint8Array
-let applePrivateKey: Uint8Array | undefined;
-if (APPLE_CERTIFICATE) {
-	const cert = APPLE_CERTIFICATE.replace(/\\n/g, '\n').replace(/\r\n/g, '\n');
-	applePrivateKey = new TextEncoder().encode(cert);
-}
-export const appleOauth = applePrivateKey
-	? new Apple(APPLE_CLIENT_ID, APPLE_TEAM_ID, APPLE_KEY_ID, applePrivateKey, appleRedirectUrl)
-	: (null as any);
+export const microsoftOauth = new MicrosoftEntraId(
+	MICROSOFT_TENANT_ID,
+	MICROSOFT_CLIENT_ID,
+	MICROSOFT_CLIENT_SECRET,
+	microsoftRedirectUrl
+);
 

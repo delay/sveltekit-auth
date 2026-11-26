@@ -39,7 +39,7 @@
 				</p>
 			</div>
 			<h2>Qui sommes nous?</h2>
-			<p>OpenProduct est une association à but non-lucrative (loi 1901) qui souhaite promouvoir les <strong>producteurs locaux</strong> et les <strong>circuits courts</strong> en permettant à tous de trouver facilement les <strong>producteurs près de chez soi</strong> et de les contacter directement. Re-découvrez le <strong>made in France</strong> et soutenez l'agriculture locale de votre région.</p>
+			<p>OpenProduct est une association à but non lucratif (loi 1901) qui souhaite promouvoir les <strong>producteurs locaux</strong> et les <strong>circuits courts</strong> en permettant à tous de trouver facilement les <strong>producteurs près de chez soi</strong> et de les contacter directement. Re-découvrez le <strong>made in France</strong> et soutenez l'agriculture locale de votre région.</p>
 			<h2>Que met on en place?</h2>
 			<p>On recense tous les producteurs locaux de France que l'on laisse en accès libre (open-source) et sur ce site on les présente sur une carte avec des fonctionnalités de recherches. L'inscription et l'utilisation sont gratuites pour tous les producteurs afin de n'en laisser aucun de côté. Attention : On se limite aux producteurs de biens (pas de services) avec un magasin à destination du grand public (B2C).</p>
 			<h2>Pourquoi?</h2>
@@ -52,10 +52,10 @@
 			</ul>
 			<h2>Avec quels financements?</h2>
 			<p>Chacun peut donner une cotisation annuelle libre et/ou adhérer à l'association. Celle-ci est mise en avant sur le site <a href={resolve("/about#bienfaiteurs")}>ici</a> de manière à sensibiliser le consommateur aux producteurs qui s'engagent. Au vue du nombre de producteurs et consommateurs, ils nous suffirait d'une toute petite part du gâteau.</p>
-			<p>Les consommateurs peuvent aussi faire un don déductible. Si vous voulez faire un don <a href="https://fr.ulule.com/openproduct/" target="_blank">ici</a>, soyez assuré de sa bonne utilisation. Nous vous en remerçions. Les documents administratifs et comptes sont publics et disponibles <a href="/documents.html">ici</a> ce qui vous assure qu'il y aura toujours du monde pour vérifier le bon usage de l'argent.</p>
+			<p>Les consommateurs peuvent aussi faire un don déductible. Si vous voulez faire un don <a href="https://fr.ulule.com/openproduct/" target="_blank">ici</a>, soyez assuré de sa bonne utilisation. Nous vous en remercions. Les documents administratifs et comptes sont publics et disponibles <a href="/documents.html">ici</a> ce qui vous assure qu'il y aura toujours du monde pour vérifier le bon usage de l'argent.</p>
 			<p>Nous comptons aussi sur la communauté des utilisateurs pour nous aider à recenser tous les producteurs : Écrivez-nous par email à <a href="mailto:contact@openproduct.fr">contact@openproduct.fr</a> et devenez ambassadeur OpenProduct.</p>
 			<h2>L'avenir</h2>
-			<p>Nous souhaitons enrichir la base de donnée et le site surtout pour son utilisation sur smartphone et à terme créer une application mobile mais cela demanderait plus d’argent.</p>
+			<p>Nous souhaitons enrichir la base de données et le site surtout pour son utilisation sur smartphone et à terme créer une application mobile mais cela demanderait plus d’argent.</p>
 			<p>La priorité c’est aussi de faire connaître OpenProduct en diffusant des tracts aux producteurs et intermédiaires pour qu’ils nous fassent connaître auprès de leurs clients.</p>
 			<p>Nous avons le projet de créer un label pour mettre un peu plus en valeur les producteurs qui jouent la carte de la transparence. Il permet au consommateur d'avoir une certaine garantie que la production soit réellement locale. En effet, certains peuvent être tentés d'importer les produits et de ne faire localement qu'une infime partie du travail.</p>
 		</div>
