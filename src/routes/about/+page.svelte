@@ -10,22 +10,18 @@
 	/>
 </svelte:head>
 
-<div class="container mx-auto py-8 px-4">
-	<section class="container grid items-center gap-6">
-		<div class="flex max-w-[980px] flex-col items-start gap-2">
-			<h1 class="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
-				{APP_NAME}
-			</h1>
+<div class="container mx-auto py-8 px-4 min-h-screen">
+	<section class="grid items-start gap-6">
+		<div class="flex max-w-[980px] flex-col items-start gap-4 pb-8">
+			<h3>{APP_NAME}</h3>
 			<p>Adresse: 7 le Surget, 22 980 Plélan-le-Petit</p>
 			<p>Téléphone: <a href="tel:+33985104873">(+33)9 85 10 48 73</a></p>
 			<p>Courriel: <a href="mailto:contact@openproduct.fr">contact@openproduct.fr</a></p>
 			<br>
 			<p>©️ Tous droits réservés sur le nom OpenProduct, le logo et tout ce qui tourne autour de la marque. Pour le reste, tout est ouvert.</p>
 		</div>
-		<div class="flex max-w-[980px] flex-col items-start gap-2">
-			<h1 class="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
-				Bienfaiteurs
-			</h1>
+		<div class="flex max-w-[980px] flex-col items-start gap-4 pb-8">
+			<h3>Bienfaiteurs</h3>
 			<p>Voici la liste des personnes (entreprise ou personnes physiques) qui ont données (et acceptées d'apparaitre) au cours des 12 derniers mois.</p>
 			<table>
 				<caption>

@@ -13,7 +13,7 @@ export const userTable = pgTable('users', {
 	receiveEmail: boolean('receive_email').notNull().default(true),
 	password: text('password'),
 	token: text('token').unique(),
-	producerId: integer('producer_id').unique().notNull(),
+	producerId: integer('producer_id').unique(),
 	createdAt: timestamp('created_at', {
 		withTimezone: true,
 		mode: 'date'

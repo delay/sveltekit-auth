@@ -1,0 +1,18 @@
+# Robots.txt pour OpenProduct
+# https://www.openproduct.fr
+
+User-agent: *
+Allow: /
+Allow: /map
+Allow: /about
+Allow: /auth/sign-up
+Disallow: /dashboard
+Disallow: /auth/verify
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://www.openproduct.fr/sitemap.xml
+
+# Crawl-delay pour éviter la surcharge
+Crawl-delay: 1
+

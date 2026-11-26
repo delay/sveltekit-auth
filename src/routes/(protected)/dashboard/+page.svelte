@@ -15,7 +15,7 @@
 	let products = $state(data.products || []);
 	let selectedProductIds:Map<number, string> = $state(new Map());
 	const { form, errors, enhance, submitting, message } = superForm(
-		data.form.data,
+		data.form,
 		{
 			// validators: zodClient(producerSchema),
 			resetForm: false,
@@ -122,8 +122,10 @@
 	<title>Tableau de bord - Profil Producteur</title>
 </svelte:head>
 
-<div class="container mx-auto py-8 px-4">
-	<div class="max-w-4xl mx-auto">
+
+<div class="container mx-auto py-8 px-4 min-h-screen">
+	<section class="grid items-start gap-6">
+	<div class="flex max-w-[980px] flex-col items-start gap-4 pb-8">
 		<!-- En-tête -->
 		<div class="mb-8">
 			<h1 class="h1">Tableau de bord</h1>
@@ -155,26 +157,6 @@
 							Producteur actuel : <strong>{data.producer.companyName}</strong> (ID: {data.producer.id})
 						</p>
 					{/if}
-				</div>
-			</aside>
-		{/if}
-
-		<!-- Message de succès -->
-		{#if showSuccessMessage}
-			<aside class="alert variant-filled-success mb-6">
-				<div class="alert-message flex items-center gap-2">
-					<CircleCheck class="h-5 w-5" />
-					<span>Profil sauvegardé avec succès !</span>
-				</div>
-			</aside>
-		{/if}
-
-		<!-- Message d'erreur global -->
-		{#if $message}
-			<aside class="alert variant-filled-error mb-6">
-				<div class="alert-message flex items-center gap-2">
-					<CircleAlert class="h-5 w-5" />
-					<span>{$message}</span>
 				</div>
 			</aside>
 		{/if}
@@ -567,6 +549,7 @@
 				</div>
 
 				<!-- Production -->
+				{#if data.producer}
 				<div class="card">
 					<header class="card-header">
 						<h2 class="h3 flex items-center gap-2">
@@ -607,7 +590,35 @@
 						</div>
 					</section>
 				</div>
+				{/if}
 
+				<!-- Message de succès -->
+				{#if showSuccessMessage}
+					<aside class="alert variant-filled-success mb-6">
+						<div class="alert-message flex items-center gap-2">
+							<CircleCheck class="h-5 w-5" />
+							<span>Profil sauvegardé avec succès ! Les modifications seront visible sur la carte sous une semaine.</span>
+						</div>
+					</aside>
+				{/if}
+
+				<!-- Message d'erreur global -->
+				{#if $message}
+					<aside class="alert variant-filled-error mb-6">
+						<div class="alert-message flex items-center gap-2">
+							<CircleAlert class="h-5 w-5" />
+							<span>{$message}</span>
+						</div>
+					</aside>
+				{/if}
+				{#if $errors.general}
+					<aside class="alert variant-filled-error mb-6">
+						<div class="alert-message flex items-center gap-2">
+							<CircleAlert class="h-5 w-5" />
+							<span>{$errors.general}</span>
+						</div>
+					</aside>
+				{/if}
 				<!-- Boutons d'action -->
 				<div class="flex justify-end space-x-4">
 					<button
@@ -626,6 +637,7 @@
 			</div>
 		</form>
 	</div>
+	</section>
 </div>
 
 

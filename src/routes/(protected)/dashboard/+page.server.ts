@@ -7,9 +7,8 @@ import { resolve } from '$app/paths';
 import { producerSchema } from '$lib/config/zod-schemas.js';
 import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
-import { sql } from 'drizzle-orm';
+import { sql, DrizzleQueryError } from 'drizzle-orm';
 import { PgDialect } from 'drizzle-orm/pg-core';
-import type { number } from 'zod/v4';
 
 const ADMIN_ROLE = 'ADMIN';
 
@@ -81,44 +80,26 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 		producer = allProducers[0];
 	}
 
-	// Initialiser le formulaire avec les données existantes
-	const form = {
-		data: producer ? {
-			companyName: producer.companyName,
-			firstName: producer.firstName || '',
-			lastName: producer.lastName || '',
-			shortDescription: producer.shortDescription || '',
-			description: producer.description || '',
-			postCode: producer.postCode || 0,
-			city: producer.city || '',
-			address: producer.address || '',
-			category: producer.category || '',
-			phoneNumber1: producer.phoneNumber1 || '',
-			phoneNumber2: producer.phoneNumber2 || '',
-			siretNumber: producer.siretNumber || '',
-			website1: producer.website1 || '',
-			website2: producer.website2 || '',
-			website3: producer.website3 || ''
-		} : {
-			companyName: '',
-			firstName: '',
-			lastName: '',
-			shortDescription: '',
-			description: '',
-			postCode: 0,
-			city: '',
-			address: '',
-			category: '',
-			phoneNumber1: '',
-			phoneNumber2: '',
-			siretNumber: '',
-			website1: '',
-			website2: '',
-			website3: ''
-		},
-		errors: {},
-		valid: true
-	};
+	// Initialiser le formulaire avec superValidate
+	const formData = producer ? {
+		companyName: producer.companyName,
+		firstName: producer.firstName || '',
+		lastName: producer.lastName || '',
+		shortDescription: producer.shortDescription || '',
+		description: producer.description || '',
+		postCode: producer.postCode || 0,
+		city: producer.city || '',
+		address: producer.address || '',
+		category: producer.category || '',
+		phoneNumber1: producer.phoneNumber1 || '',
+		phoneNumber2: producer.phoneNumber2 || '',
+		siretNumber: producer.siretNumber || '',
+		website1: producer.website1 || '',
+		website2: producer.website2 || '',
+		website3: producer.website3 || ''
+	} : undefined;
+	
+	const form = await superValidate(formData, zod4(producerSchema));
 	
 	// Mettre à jour le producerId dans locals.user si un producteur est sélectionné
 	if (locals.session && producer?.id != null) {
@@ -239,16 +220,16 @@ export const actions: Actions = {
 						createdAt: new Date()
 					});
 			}
-			return {form};
+			return { form };
 		} catch (error) {
+			let message = 'Une erreur s\'est produite lors de la sauvegarde de votre profil.';
+			if (error instanceof DrizzleQueryError) {
+				message += " : "+error.cause?.detail+". Tentez de coriger le problème si vous pouvez.";
+			}
+			message += " Si le problème persiste signalez le par mail : contact@openproduct.fr."
 			console.error('Error saving producer profile:', error);
-			return fail(500, {
-				form: {
-					data,
-					errors: { general: 'An error occurred while saving your profile. Please try again.' },
-					valid: false
-				}
-			});
+			form.errors.general = [message];
+			return fail(500, { form });
 		}
 	},
 	removeProduct: async ({ request, locals, url }) => {

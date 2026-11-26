@@ -59,6 +59,7 @@
 		"@sveltejs/enhanced-img": "^0.8.4",
 		"@types/leaflet": "^1.9.20",
 		"arctic": "^3.7.0",
+		"chart.js": "^4.5.1",
 		"clsx": "^2.1.1",
 		"cmdk-sv": "^0.0.19",
 		"drizzle-orm": "^0.44.6",

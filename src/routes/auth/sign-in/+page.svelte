@@ -2,6 +2,9 @@
 	import { enhance } from '$app/forms';
 	import { Loader, CircleAlert } from 'lucide-svelte';
 	import { resolve } from '$app/paths';
+	import GoogleIcon from '$lib/components/icons/GoogleIcon.svelte';
+	import FacebookIcon from '$lib/components/icons/FacebookIcon.svelte';
+	import MicrosoftIcon from '$lib/components/icons/MicrosoftIcon.svelte';
 
 	interface Props {
 		form?: {
@@ -24,6 +27,7 @@
 		valid: form?.valid ?? true
 	}));
 	let submitting = $state(false);
+	let hide_password = $state(true);
 </script>
 
 <div class="container h-full mx-auto flex justify-center items-center">
@@ -58,8 +62,8 @@
 				<input 
 					class="input {formData.errors.email ? 'input-error' : ''}" 
 					type="email" 
-					name="email" 
-					placeholder="m@example.com"
+				name="email" 
+				placeholder="m@example.com"
 					value={formData.data.email}
 					required
 				/>
@@ -69,10 +73,10 @@
 			</label>
 
 			<label class="label">
-				<span>Mot de passe</span>
+				<span>Mot de passe</span>&nbsp;<button type="button" class="toggle-password" onclick="{() => hide_password = !hide_password}">👁️</button>
 				<input 
 					class="input {formData.errors.password ? 'input-error' : ''}" 
-					type="password" 
+					type="{hide_password? "password" : "text"}" 
 					name="password"
 					value={formData.data.password}
 					required
@@ -96,7 +100,7 @@
 			</button>
 		</form>
 
-		<footer class="card-footer text-center mt-6">
+		<div class="">
 			<p class="text-surface-600-300-token">
 				Mot de passe oublié ?
 				<a href="{resolve("/auth/password/reset")}" class="anchor">Renvoyer</a>
@@ -105,6 +109,34 @@
 				Pas encore de compte ?
 				<a href="{resolve("/auth/sign-up")}" class="anchor">S'inscrire</a>
 			</p>
-		</footer>
+		</div>
+
+		<div class="my-6 flex items-center gap-4">
+			<span class="h-px flex-1 bg-surface-300-600-token"></span>
+			<span class="text-xs uppercase text-surface-600-300-token">ou</span>
+			<span class="h-px flex-1 bg-surface-300-600-token"></span>
+		</div>
+
+		<a
+			href={resolve('/auth/oauth/google')}
+			class="btn variant-soft-surface w-full flex items-center justify-center gap-2"
+		>
+			<GoogleIcon class="h-5 w-5" />
+			Continuer avec Google
+		</a>
+		<a
+			href={resolve('/auth/oauth/facebook')}
+			class="btn variant-soft-surface w-full flex items-center justify-center gap-2"
+		>
+			<FacebookIcon class="h-5 w-5" />
+			Continuer avec Facebook
+		</a>
+		<a
+			href={resolve('/auth/oauth/microsoft')}
+			class="btn variant-soft-surface w-full flex items-center justify-center gap-2"
+		>
+			<MicrosoftIcon class="h-5 w-5" />
+			Continuer avec Microsoft
+		</a>
 	</div>
 </div>

@@ -34,6 +34,13 @@ Pkg.add("FunSQL")
 Pkg.add("Tables")
 Pkg.add("SMTPClient")
 Pkg.add("DataFrames")
+Pkg.add("Memoize")
+Pkg.add("URIs")
+Pkg.add("HTTP")
+Pkg.add("Gumbo") # Parse HTML
+Pkg.add("Cascadia") # CSS selector
+Pkg.add("GZip")
+Pkg.add("Memoization")
 EOF
 
 

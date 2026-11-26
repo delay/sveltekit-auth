@@ -1,21 +1,36 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
-	import { initializeStores, Drawer, getDrawerStore, filter } from '@skeletonlabs/skeleton';
-	import { Search, MapPin, X, CirclePlus, CircleX } from 'lucide-svelte';
+	import { initializeStores, Drawer, getDrawerStore } from '@skeletonlabs/skeleton';
+	import { Search, MapPin, X, CircleX } from 'lucide-svelte';
 	import ProductSelector from '$lib/components/product_selector/ProductSelector.svelte';
 	import { resolve } from '$app/paths';
 
+	type ProducerMinimalInfo = {
+		id: number;
+		name: string;
+		area: number;
+		x?: number;
+		y?: number;
+	}
+	type ProductDetails = {
+		producers: number[];
+		list: ProducerMinimalInfo[];
+	};
 	initializeStores();
 	const drawerStore = getDrawerStore();
 	let filters = $state({
 		category: '',
 		address: '',
 		produces: new Map<number, string>(),
-		tags: new Set<number>()
+		tags: 0
 	});
 	
 	let availableTags = $state<any[]>([]);
+	let producersDrawerData = $state<{
+		productName: string;
+		producers: Map<number, ProducerMinimalInfo[]>;
+	} | null>(null);
 	
 	function openFilters() {
 		drawerStore.open({
@@ -32,12 +47,36 @@
 		drawerStore.close();
 	}
 
+	function openProducersDrawer(productName: string, producersByArea: Map<number, ProducerMinimalInfo[]>) {
+		producersDrawerData = { productName, producers: producersByArea };
+		drawerStore.open({
+			id: 'producers-drawer',
+			position: 'right',
+			width: 'w-full md:w-96',
+			bgDrawer: 'bg-surface-50-900-token',
+			bgBackdrop: 'bg-surface-backdrop-token',
+			padding: 'p-0'
+		});
+	}
+
+	function closeProducersDrawer() {
+		drawerStore.close();
+		producersDrawerData = null;
+	}
+
+	function centerMapOnProducer(producer: ProducerMinimalInfo) {
+		if (map && producer.x && producer.y) {
+			map.setView([producer.x, producer.y], 15);
+			closeProducersDrawer();
+		}
+	}
+
 	function resetFilters() {
 		filters = {
 			category: '',
 			address: '',
 			produces: new Map<number, string>(),
-			tags: new Set<number>()
+			tags: 0
 		};
 		if (filterSelect) filterSelect.value = '';
 		if (addressInput) addressInput.value = '';
@@ -76,17 +115,17 @@
 			// for (const myArea of loadedAreas) {
 				const myArea = 0;
 				console.log("applyFilters() : area ",myArea,";");
-				let datas = productsByAreas.get(myArea) || new Map<number, number[]>();
+				let datas = productsByAreas.get(myArea) || new Map<number, ProductDetails>();
 				for (const product of filters.produces.keys()) {
 					const producers = datas.get(product);
 					if (!producers) {
 						fetch(resolve('/data/products')+'/p'+product+'.json')
 							.then(response => response.json())
 							.then(producers => {
-								let datas = productsByAreas.get(myArea) || new Map<number, number[]>();
+								let datas = productsByAreas.get(myArea) || new Map<number, ProductDetails>();
 								datas.set(product, producers);
 								productsByAreas.set(myArea, datas);
-								for (const p of producers) {
+								for (const p of producers.producers) {
 									producersFilterByProduct.set(p, true);
 								}
 								displayProducers(producersLoaded);
@@ -98,7 +137,7 @@
 								);
 							});
 					} else {
-						for (const p of producers) {
+						for (const p of producers.producers) {
 							producersFilterByProduct.set(p, true);
 						}
 						someInCache = true;
@@ -113,7 +152,7 @@
 				console.log("applyFilters(category:",filters.category,");");
 				myfilter = combinedFilter;
 				filterProducersByCategory(filters.category);
-			} else if (filters.tags.size > 0) {
+			} else if (filters.tags > 0) {
 				console.log("applyFilters(tags:",filters.tags,");");
 				myfilter = combinedFilter;
 				displayProducers(producersLoaded);
@@ -154,7 +193,8 @@
 	let loadedAreas: number[] = [];
 	let loadingAreas: number[] = [];
 	let areasToCheck: number[]|null = null;
-	let productsByAreas: Map<number,Map<number, number[]>> = new Map(); // Map<AreaId, Map<ProductId, Producers[]>>
+
+	let productsByAreas: Map<number,Map<number, ProductDetails>> = new Map(); // Map<AreaId, Map<ProductId, Producers[]>>
 	let producersFilterByProduct: Map<number, boolean> = new Map();
 	let filterChar = "";
 	let markersLoaded: any = {};
@@ -192,6 +232,9 @@
 			cyan: getIcon("#359396"),     // PME
 			black: getIcon("#000000")     // Défaut
 		};
+	}
+	function is_tagged(tag_value: number, tag2test: number) {
+		return (tag2test & tag_value) > 0;
 	}
 
 	async function loadLeaflet() {
@@ -503,12 +546,30 @@
 
 		let text = `<h3>${producer.name}</h3>`;
 		if (producer.web) {
-			text = `<a href="${producer.web}" target="_blank">${text}</a><br>`;
+			text = `<a href="${producer.web}" target="_blank">${text}</a>`;
+		}
+		if (producer.tag && producer.tag>0) {
+			text += "<p>Tag : "; var sep = "";
+			for (const t of availableTags) {
+				if (is_tagged(t.mask, producer.tag)) {
+					text += sep+t.label;
+					sep = ",";
+				}
+			}
+			text += "</p>";
 		}
 		if (producer.suspect == 1) {
 			text += '<span style="color:red">Ce producteur semble ne plus exister. Contactez-nous si vous avez des informations.</span>';
 		}
 		text += `<p>${producer.txt}</p>`;
+		if (producer.production && producer.production.length>0) {
+			text += "<p>Production : "; var sep = "";
+			for (const product of producer.production) {
+				text += sep+product;
+				sep = ",";
+			}
+			text += "</p>";
+		}
 		text += "<a href='"+resolve("/")+"producers/producer_"+producer.id+".html' target='producer'>+ d'infos</a><br>";
 		if (producer.email) {
 			text += `Email: <a href="mailto:${producer.email}">${producer.email}</a><br>`;
@@ -536,8 +597,8 @@
 	}
 
 	function displayProducers(producers: object[]) {
-		console.log("displayProducers(", producers, ")");
-		
+		// console.log("displayProducers(", producers, ")");
+		let nbDisplayingProducers = 0;
 		for (const producer of producers) {
 			// console.log("displayProducers() : producer=", producer);
 			if (producer != undefined) {
@@ -545,6 +606,7 @@
 				const markerManager = markersLoaded[key];
 				
 				if (myfilter(producer)) {
+					nbDisplayingProducers += 1;
 					if (markerManager != undefined) {
 						if (markerManager[0] == false) {
 							markerManager[0] = true;
@@ -563,6 +625,45 @@
 				}
 			}
 		}
+		// If no pins displayed
+		// console.log("displayProducers() => ", nbDisplayingProducers);
+		if (nbDisplayingProducers==0 && myfilter==filterByProduct) {
+			let myArea = 0;
+			let datas = productsByAreas.get(myArea);
+			if (!datas) { // Should not be null as filterByProduct has initialized it
+				console.log("INFO : No product found on area ",myArea);
+				return false;
+			}
+			// console.log("INFO : products found on ",myArea);
+				for (const product of filters.produces.keys()) {
+					const producers = datas.get(product);
+					if (!producers) { // Should not be null as filterByProduct has initialized it
+						console.log("ERROR : displayProducers() : No producers of ", product, " found.");
+						return false;
+					}
+					// console.log("INFO : producer of ", product, " : ", producers);
+					// Afficher la liste des producteurs si disponible
+					if (producers.list && producers.list.length > 0) {
+						const productName = filters.produces.get(product) || 'ce produit';
+						
+						// Grouper par département
+						const byArea = new Map<number, ProducerMinimalInfo[]>();
+						for (const p of producers.list) {
+							const area = p.area || 0;
+							if (!byArea.has(area)) {
+								byArea.set(area, []);
+							}
+							byArea.get(area)!.push(p);
+						}
+						
+						// Ouvrir le drawer avec la liste des producteurs
+						openProducersDrawer(productName, byArea);
+					} else if (producers.producers && producers.producers.length > 0) {
+						const productName = filters.produces.get(product) || 'ce produit';
+						alert(`Aucun producteur de "${productName}" trouvé dans la zone affichée.\n\n${producers.producers.length} producteurs disponibles au total (liste trop longue pour être affichée).`);
+					}
+				}
+		}
 	}
 
 	// Fonctions de filtrage
@@ -575,8 +676,8 @@
 	};
 	
 	const filterByTags = (producer: any) => {
-		if (filters.tags.size === 0) return true;
-		return filters.tags.has(producer.tag || 0);
+		if (filters.tags==0) return true;
+		return (filters.tags & producer.tag)==filters.tags;
 	};
 	const charFilter = (producer: any) => {
 		let inverse = false;
@@ -678,6 +779,9 @@
 			const response = await fetch(resolve(`/data`)+"/tags/t1.json");
 			const data = await response.json();
 			availableTags = data;
+			for (const tag of data) {
+				availableTags[tag.id].mask = 2**tag.id
+			}
 			console.log('Tags chargés:', availableTags);
 		} catch (error) {
 			console.error('Erreur lors du chargement des tags:', error);
@@ -685,13 +789,14 @@
 	}
 	
 	function toggleTag(tagId: number) {
-		const newSet = new Set(filters.tags);
-		if (newSet.has(tagId)) {
-			newSet.delete(tagId);
+		var newSet = filters.tags;
+		if (is_tagged(tagId, newSet)) {
+			newSet = (newSet & ~tagId);
 		} else {
-			newSet.add(tagId);
+			newSet = (newSet | tagId);
 		}
 		filters.tags = newSet;
+		console.log(filters);
 	}
 </script>
 
@@ -805,11 +910,11 @@
 							{#each availableTags as tag}
 								<button
 									type="button"
-									class="btn w-full {filters.tags.has(tag.id) ? 'variant-filled-primary' : 'variant-ghost-surface'}"
-									onclick={() => toggleTag(tag.id)}
+									class="btn w-full {is_tagged(tag.mask, filters.tags) ? 'variant-filled-primary' : 'variant-ghost-surface'}"
+									onclick={() => toggleTag(tag.mask)}
 								>
 									<span class="flex items-center gap-2">
-										{#if filters.tags.has(tag.id)}
+										{#if is_tagged(tag.mask, filters.tags)}
 											<div class="w-2 h-2 bg-white rounded-full"></div>
 										{/if}
 										<span>{tag.label}</span>
@@ -834,6 +939,70 @@
 					Appliquer
 				</button>
 			</footer>
+		</div>
+	{/if}
+	
+	<!-- Drawer pour la liste des producteurs -->
+	{#if $drawerStore.id === 'producers-drawer' && producersDrawerData}
+		<div class="flex flex-col h-full bg-surface-50-900-token">
+			<!-- Header -->
+			<header class="bg-primary-500 text-white p-4 flex items-center justify-between">
+				<h2 class="h3 font-bold">Producteurs de {producersDrawerData.productName}</h2>
+				<button type="button"
+					class="btn-icon variant-filled hover:variant-filled-error"
+					onclick={closeProducersDrawer}>
+					<X size={24} />
+				</button>
+			</header>
+
+			<!-- Message d'info -->
+			<div class="bg-warning-500/10 border-l-4 border-warning-500 p-4">
+				<p class="text-sm">
+					Aucun producteur trouvé dans la zone affichée.
+					<br />
+					<strong>Cliquez sur un producteur</strong> pour centrer la carte sur sa position.
+				</p>
+			</div>
+
+			<!-- Liste des producteurs groupés par département -->
+			<div class="flex-1 overflow-y-auto p-4">
+				{#each Array.from(producersDrawerData.producers.keys()).sort((a, b) => a - b) as area}
+					{@const producersList = producersDrawerData.producers.get(area)}
+					{#if producersList}
+						<div class="mb-6">
+							<!-- En-tête du département -->
+							<div class="flex items-center gap-2 mb-3 pb-2 border-b border-surface-300-600-token">
+								<MapPin size={20} class="text-primary-500" />
+								<h3 class="font-bold text-lg">
+									Département {area.toString().padStart(2, '0')}
+								</h3>
+								<span class="badge variant-filled-surface">{producersList.length}</span>
+							</div>
+
+							<!-- Liste des producteurs -->
+							<div class="space-y-2">
+								{#each producersList as producer}
+									<button
+										type="button"
+										class="w-full text-left p-3 rounded-lg bg-surface-100-800-token hover:bg-primary-500/20 transition-colors border border-surface-300-600-token"
+										onclick={() => centerMapOnProducer(producer)}
+									>
+										<div class="flex items-center justify-between">
+											<span class="font-medium">{producer.name}</span>
+											<MapPin size={16} class="text-primary-500" />
+										</div>
+										{#if producer.x && producer.y}
+											<div class="text-xs text-surface-600-300-token mt-1">
+												{producer.x.toFixed(4)}, {producer.y.toFixed(4)}
+											</div>
+										{/if}
+									</button>
+								{/each}
+							</div>
+						</div>
+					{/if}
+				{/each}
+			</div>
 		</div>
 	{/if}
 </Drawer>

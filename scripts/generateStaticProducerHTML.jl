@@ -5,25 +5,32 @@
 =#
 
 import JSON, OteraEngine, Dates, DBInterface
+using DataFrames
 DEBUG=true
 
 include("connect.jl")
-dbConnection = get_connection()
+dbConnection = OpenProduct.get_connection(ROOT_PATH)
 
 TemplateProducerPage = missing
 
-function generateStaticProducerPage(filepath::String, producer::LibPQ.Row, col_names::Vector{String})
+function generateStaticProducerPage(filepath::String, producer::DataFrameRow{DataFrame, DataFrames.Index}, col_names::Vector{String})
 	# println("generateStaticProducerPage(",filepath,",",producer,")")
 	if ismissing(TemplateProducerPage)
 		global TemplateProducerPage = OteraEngine.Template("./templateProducerPage.html")
 	end
-	file = open(filepath, "w") do file
+	open(filepath, "w") do fd
+		producer_dict = Dict(names(producer) .=> values(producer))
+		producer_dict["production"] = join(OpenProduct.convert_product_ids_to_list(producer_dict["production"], dbConnection), ", ")
+		producer_dict["tag"] = join([tag.label for tag in OpenProduct.convert_tag_to_list(producer_dict["tag"])], ", ")
+		# println("Dict:", producer_dict)
 		dictionary = Dict{Symbol, String}(
-			Symbol(name) => string(producer[index]) for (index, name) in enumerate(col_names)
+			Symbol(name) => string(producer_dict[name]) for (index, name) in enumerate(col_names)
 		)
-		write(file, TemplateProducerPage(init=dictionary))
+		write(fd, TemplateProducerPage(init=dictionary))
 	end
+	# println("File ",filepath," written.")
 end
+
 function generateStaticProducerPages(webrootpath::String, webpath::String; useCache=false)
 	if DEBUG; println("generateStaticProducerPages(",webrootpath,",",webpath,")"); end
 	mindate = "2000-01-01 00:00:00"
@@ -33,11 +40,15 @@ function generateStaticProducerPages(webrootpath::String, webpath::String; useCa
 			concat(address,' ',post_code,' ',city) as address,
 			phone_number_1, phone_number_2,
 			case when send_email is NULL or send_email!='ko' then email else '' end as email,
-			case when website_status in ('ok','400') then website_1 else '' end as website, siret_number as siret
-		FROM producers
+			case when website_status in ('ok','400') then website_1 else '' end as website, siret_number as siret,
+			p.tag,
+			string_agg(cast(pp.product_id AS text), ',') as production
+		FROM producers p
+		left join producers_products pp on pp.producer_id=p.id
 		WHERE latitude is not null AND longitude is not null
 			AND status in ('actif','unknown','to-check')
-		ORDER BY company_name;"
+		GROUP BY p.id
+		ORDER BY p.company_name;"
 	if DEBUG
 		println("SQL:",sql)
 	end
@@ -46,13 +57,11 @@ function generateStaticProducerPages(webrootpath::String, webpath::String; useCa
 	nb::Int = 0
 	nbDone::Int = 0
 	producers2 = Dict{Int, String}()
-	okCol = LibPQ.column_number(producers, :ok)
-	idCol = LibPQ.column_number(producers, :id)
-	nameCol = LibPQ.column_number(producers, :name)
 	col_names = LibPQ.column_names(producers)
-	for producer in producers
-		if producer[okCol]==0
-			producerFilepath = webrootpath*replace(weburl, "%d"=>string(producer[idCol]))
+	df = DataFrames.DataFrame(producers)
+	for producer in eachrow(df)
+		if producer[:ok]==0
+			producerFilepath = webrootpath*replace(weburl, "%d"=>string(producer[:id]))
 			generateStaticProducerPage(producerFilepath, producer, col_names)
 			nbDone += 1
 			if nbDone%1000==0
@@ -60,7 +69,7 @@ function generateStaticProducerPages(webrootpath::String, webpath::String; useCa
 			end
 		end
 		# println(" File '"*producerFilepath*"' writed.")
-		producers2[producer[idCol]] = producer[nameCol]
+		producers2[producer[:id]] = producer[:name]
 		nb += 1
 	end
 	filepath = webrootpath*webpath*"/index.html"

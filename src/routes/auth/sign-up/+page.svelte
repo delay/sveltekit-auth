@@ -2,6 +2,9 @@
 	import { enhance } from '$app/forms';
 	import { Loader, CircleAlert } from 'lucide-svelte';
 	import { resolve } from '$app/paths';
+	import GoogleIcon from '$lib/components/icons/GoogleIcon.svelte';
+	import FacebookIcon from '$lib/components/icons/FacebookIcon.svelte';
+	import MicrosoftIcon from '$lib/components/icons/MicrosoftIcon.svelte';
 
 	interface Props {
 		form?: {
@@ -133,8 +136,8 @@
 					<span class="text-sm font-medium">J'accepte les conditions d'utilisation et la politique de confidentialité</span>
 					<p class="text-xs text-surface-600-300-token">
 						Vous acceptez les 
-						<a href="/terms" class="anchor">conditions d'utilisation</a> et la 
-						<a href="/privacy" class="anchor">politique de confidentialité</a>.
+						<a href={resolve('/terms')} class="anchor">conditions d'utilisation</a> et la 
+						<a href={resolve('/privacy')} class="anchor">politique de confidentialité</a>.
 					</p>
 				</div>
 			</label>
@@ -155,5 +158,33 @@
 				{/if}
 			</button>
 		</form>
+
+		<div class="my-6 flex items-center gap-4">
+			<span class="h-px flex-1 bg-surface-300-600-token"></span>
+			<span class="text-xs uppercase text-surface-600-300-token">ou</span>
+			<span class="h-px flex-1 bg-surface-300-600-token"></span>
+		</div>
+
+		<a
+			href={resolve('/auth/oauth/google')}
+			class="btn variant-soft-surface w-full flex items-center justify-center gap-2"
+		>
+			<GoogleIcon class="h-5 w-5" />
+			S'inscrire avec Google
+		</a>
+		<a
+			href={resolve('/auth/oauth/facebook')}
+			class="btn variant-soft-surface w-full flex items-center justify-center gap-2"
+		>
+			<FacebookIcon class="h-5 w-5" />
+			S'inscrire avec Facebook
+		</a>
+		<a
+			href={resolve('/auth/oauth/microsoft')}
+			class="btn variant-soft-surface w-full flex items-center justify-center gap-2"
+		>
+			<MicrosoftIcon class="h-5 w-5" />
+			S'inscrire avec Microsoft
+		</a>
 	</div>
 </div>

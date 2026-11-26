@@ -59,6 +59,22 @@ export const handle: Handle = async ({ event, resolve }) => {
 	const startTimer = Date.now();
 	event.locals.startTimer = startTimer;
 
+	// Redirection HTTP vers HTTPS en production
+	if (!dev) {
+		const proto = event.request.headers.get('x-forwarded-proto');
+		const host = event.request.headers.get('host');
+		
+		if (proto === 'http' && host) {
+			const httpsUrl = `https://${host}${event.url.pathname}${event.url.search}`;
+			return new Response(null, {
+				status: 301,
+				headers: {
+					location: httpsUrl
+				}
+			});
+		}
+	}
+
 	const sessionId = event.cookies.get(lucia.sessionCookieName);
 	const { session, user } = sessionId
 		? await lucia.validateSession(sessionId)

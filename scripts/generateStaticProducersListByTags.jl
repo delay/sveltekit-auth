@@ -8,25 +8,13 @@ import JSON, DBInterface, CSV, FunSQL, LibPQ
 using Tables
 
 include("connect.jl")
-cnx = get_connection()
+dbConnection = OpenProduct.get_connection(ROOT_PATH)
 
-mutable struct Tag
-	id::Integer
-	name::String
-	label::String
-	description::String
-	producers::Array{Integer}
-end
-
-producers_tag::Array{Tag} = []
-push!(producers_tag, Tag(1, "PME", "Petites et Moyennes Entreprises", "Entreprises de petite et moyenne taille", []))
-push!(producers_tag, Tag(2, "AB", "Agriculture Biologique", "Producteurs certifiés agriculture biologique ou assimilés", []))
-
-function write_tags(producers_tag::Array{Tag})
+function write_tags(producers_tag::Dict{Int, OpenProduct.Tag})::Int
 	nb = 0
 	filepath = "../static/data/tags/t1.json"
 	file = open(filepath, "w") do file
-		write(file, JSON.json(producers_tag))
+		write(file, JSON.json(collect(values(producers_tag))))
 		nb += 1
 		# println(filepath, "writen")
 	end
@@ -35,23 +23,19 @@ function write_tags(producers_tag::Array{Tag})
 end
 
 # Get min/max points
+producers_tag = OpenProduct.get_all_available_tags()
 
-sql = "SELECT id, tag FROM producers"
-rows = DBInterface.execute(cnx, sql)
+sql = "SELECT id, tag FROM producers where tag>0"
+rows = DBInterface.execute(dbConnection, sql)
 for row in rows
 	id_producer, tag = row
-	mytag=1
-	while tag>0
-		if tag%2==1
-			push!(producers_tag[mytag].producers, id_producer)
-			tag -= 1
-		end
-		tag = tag/2
-		mytag += 1
+	global producers_tag
+	for t in OpenProduct.convert_tag_to_list(tag)
+		push!(producers_tag[t.id+1].producers, id_producer)
 	end
 end
 nb = write_tags(producers_tag)
-DBInterface.close!(cnx)
+DBInterface.close!(dbConnection)
 exit(0)
 
 # Write output

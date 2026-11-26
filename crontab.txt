@@ -1,4 +1,7 @@
+
 PATH=/home/kaja9241/.bun/bin:/home/kaja9241/.juliaup/bin:/home/kaja9241/.local/bin:/home/kaja9241/bin:/usr/local/cpanel/3rdparty/lib/path-bin:/usr/share/Modules/bin:/usr/local/cpanel/3rdparty/lib/path-bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/cpanel/composer/bin
 
 01 03 * * * /home/kaja9241/openproduct-svelte4/scripts/deploy.sh >/home/kaja9241/openproduct-svelte4/scripts/deploy.log 2>&1
+52 * * * * /home/kaja9241/openproduct-svelte4/scripts/sendMail.sh >/home/kaja9241/openproduct-svelte4/scripts/sendMail.log 2>&1
+07 01 * * * /home/kaja9241/openproduct-svelte4/scripts/monito_day.sh >/home/kaja9241/openproduct-svelte4/scripts/monito_day.log 2>&1
 

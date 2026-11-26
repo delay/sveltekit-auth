@@ -2,8 +2,6 @@
 
 cd ${0/generate_static.sh/}
 
-env
-
 ./generateStaticProducerHTML.jl
 if [ $? -ne 0 ]; then
 	echo "Fail run ./generateStaticProducerHTML.jl"
