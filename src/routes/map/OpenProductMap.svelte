@@ -1018,4 +1018,11 @@
 		height: 100%;
 		width: 100%;
 	}
+
+	/* Sur petit écran, le bouton menu est en haut à gauche : on descend le zoom */
+	@media (max-width: 767px) {
+		:global(.leaflet-top.leaflet-left) {
+			top: 56px;
+		}
+	}
 </style>
