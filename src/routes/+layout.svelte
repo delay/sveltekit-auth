@@ -27,7 +27,7 @@
 
 <main style="min-height: 100vh; overflow-y: auto;">
 	<div class="card border-surface-100-900 grid grid h-screen w-full grid-cols-[auto_1fr] border-[1px]">
-		<Navigation {user} />
+		<Navigation />
 		<div class="flex items-center justify-center">
 			<slot />
 		</div>

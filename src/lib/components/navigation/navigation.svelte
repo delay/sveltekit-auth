@@ -10,10 +10,11 @@
 	import IconSettings from '@lucide/svelte/icons/settings';
 	import { PUBLIC_BASE_PATH } from '$env/static/public';
 	// import MyLogo from '$lib/assets/img/logoOpenProduct.png?enhanced';
-	let user: any = $props();
-	let value = $state('/');
-	let userState = $derived(user.user);
+	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
+	let value = $state('/');
+	// Read straight from the layout data so it always reflects the current session.
+	let userState = $derived(page.data.user);
 </script>
 
   <Navigation.Rail>
