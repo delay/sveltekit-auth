@@ -13,8 +13,8 @@
 	<meta property="og:type" content="website" />
 </svelte:head>
 
-<div class="flex-1">
-	<section class="container grid items-center gap-6">
+<div class="h-full w-full flex-1">
+	<section class="grid h-full w-full items-center">
 		<OpenProductMap />
 	</section>
 </div>
