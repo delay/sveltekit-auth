@@ -3,7 +3,7 @@
 	import { goto } from '$app/navigation';
 
 	onMount(() => {
-		goto('/dashboard');
+		goto('/dashboard', { invalidateAll: true });
 	});
 </script>
 
