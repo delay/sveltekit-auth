@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="google-site-verification" content="DAv9og1wwEMSPZ9EO9l4XSfN5729S0FhWhPYFklNpn8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OpenProduct</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap-grid.min.css" rel="stylesheet"
+    crossorigin="anonymous">
+  <link href="/css/style.css" rel="stylesheet">
+  <link href="/css/genie/prism.css" rel="stylesheet" />
+  <link type="text/plain" rel="author" href="https://openproduct.fr/humans.txt" />
+</head>
+
+<body id="page-top" data-spy="scroll" data-target=".side-menu">
+  <div class="container-fluid">
+    <div class="row hero-header" id="home">
+      <div class="col-md-7">
+        <a href="https://openproduct.fr/">
+			<h1 id="main-heading">OpenProduct</h1>
+		</a>
+        <h3>Annuaire de France des producteurs locaux</h3>
+        <p>
+            Des producteurs vous ouvrent leur porte pour vous montrer la qualit&eacute; de leur travail.
+            Ils vous expliquent pourquoi il ne font pas autrement et donc vous comprendrez mieux le prix et ce qui fait la qualit&eacute; du produit. Exigez le droit de savoir ce que vous achetez!
+        </p>
+      </div>
+      <div class="col-md-5 hidden-xs">
+        <a href="https://openproduct.fr/">
+			<img src="/img/logoOpenProduct.png" class="rocket animated bounce" alt="OpenProduct">
+		</a>
+      </div>
+    </div>
+  </div>
+
+    <div class="container-fluid whats-next" id="whats-next">
+      <div class="row me-row content-ct">
+        <h2 class="row-title">Index</h2>
+        <div class="col-md-4 feature">
+          <ul>
+			{% for (id, p) in producers; %}
+				<li><a href='{{weburl}}/producer_{{id}}.html'> {{p}} </a></li>
+			{% end %}
+		  </ul>
+        </div>
+      </div>
+    </div>
+
+</body>
+
+</html>

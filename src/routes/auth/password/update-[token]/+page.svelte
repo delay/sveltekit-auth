@@ -1,68 +1,97 @@
 <script lang="ts">
-	import * as Form from '$lib/components/ui/form';
-	import * as Card from '$lib/components/ui/card';
-	import * as Alert from '$lib/components/ui/alert';
-	import { userUpdatePasswordSchema } from '$lib/config/zod-schemas';
-	import type { SuperValidated } from 'sveltekit-superforms';
-	import { Loader2 } from 'lucide-svelte';
-	import { AlertCircle } from 'lucide-svelte';
+	import { enhance } from '$app/forms';
+	import type { ActionData } from './$types.js';
 
-	type UserUpdatePasswordSchema = typeof userUpdatePasswordSchema;
+	export let form: ActionData;
 
-	export let form: SuperValidated<UserUpdatePasswordSchema>;
+	let loading = false;
+	let password = '';
+	let confirmPassword = '';
+	let passwordsMatch = true;
+
+	$: passwordsMatch = password === confirmPassword || confirmPassword === '';
 </script>
 
-<div class="flex items-center justify-center mx-auto max-w-2xl">
-	<Form.Root
-		let:submitting
-		let:errors
-		method="POST"
-		{form}
-		schema={userUpdatePasswordSchema}
-		let:config
-	>
-		<Card.Root>
-			<Card.Header class="space-y-1">
-				<Card.Title class="text-2xl">Change Your Password</Card.Title>
-				<Card.Description>Choose a new password for your account.</Card.Description>
-			</Card.Header>
-			<Card.Content class="grid gap-4">
-				{#if errors?._errors?.length}
-					<Alert.Root variant="destructive">
-						<AlertCircle class="h-4 w-4" />
-						<Alert.Title>Change Password Problem</Alert.Title>
-						<Alert.Description>
-							{#each errors._errors as error}
-								{error}
-							{/each}
-						</Alert.Description>
-					</Alert.Root>
-				{/if}
+<svelte:head>
+	<title>Change Your Password</title>
+</svelte:head>
 
-				<Form.Field {config} name="password">
-					<Form.Item>
-						<Form.Label>New Password</Form.Label>
-						<Form.Input type="password" />
-						<Form.Validation />
-					</Form.Item>
-				</Form.Field>
-				<Form.Field {config} name="confirmPassword">
-					<Form.Item>
-						<Form.Label>Confirm New Password</Form.Label>
-						<Form.Input type="password" />
-						<Form.Validation />
-					</Form.Item>
-				</Form.Field>
-			</Card.Content>
-			<Card.Footer>
-				<div class="w-full">
-					<Form.Button class="w-full" disabled={submitting}
-						>{#if submitting}
-							<Loader2 class="mr-2 h-4 w-4 animate-spin" />
-							Please wait{:else}Update Password{/if}
-					</Form.Button>
-				</div>
-			</Card.Footer>
-		</Card.Root>
-	</Form.Root>
+<div class="container h-full mx-auto flex justify-center items-center py-12">
+	<div class="card p-8 w-full max-w-md shadow-xl">
+		<header class="card-header text-center mb-6">
+			<h1 class="h2 mb-2">Change Your Password</h1>
+			<p class="text-surface-600-300-token">Choose a new password for your account.</p>
+		</header>
+
+		<section class="card-body">
+			{#if form?.error}
+				<aside class="alert variant-filled-error mb-4">
+					<div class="alert-message">
+						<p>{form.error}</p>
+					</div>
+				</aside>
+			{/if}
+
+			<form 
+				method="POST" 
+				use:enhance={() => {
+					loading = true;
+					return async ({ update }) => {
+						loading = false;
+						update();
+					};
+				}}
+			>
+				<label class="label mb-4">
+					<span class="font-semibold mb-2">New Password</span>
+					<input 
+						class="input px-4 py-2 rounded-lg" 
+						type="password" 
+						name="password" 
+						bind:value={password}
+						placeholder="Enter your new password"
+						required 
+						minlength="8"
+						disabled={loading}
+					/>
+					<small class="text-surface-500 text-xs mt-1">Minimum 8 characters</small>
+				</label>
+
+				<label class="label mb-4">
+					<span class="font-semibold mb-2">Confirm New Password</span>
+					<input 
+						class="input px-4 py-2 rounded-lg {!passwordsMatch ? 'input-error border-error-500' : ''}" 
+						type="password" 
+						name="confirmPassword" 
+						bind:value={confirmPassword}
+						placeholder="Confirm your new password"
+						required 
+						disabled={loading}
+					/>
+					{#if !passwordsMatch && confirmPassword !== ''}
+						<small class="text-error-500 text-sm mt-1">Passwords do not match</small>
+					{/if}
+				</label>
+
+				<button 
+					type="submit" 
+					class="btn variant-filled-primary w-full mt-2"
+					disabled={loading || !passwordsMatch || password === '' || confirmPassword === ''}
+				>
+					{#if loading}
+						<span class="animate-spin mr-2">⏳</span>
+						Please wait...
+					{:else}
+						Update Password
+					{/if}
+				</button>
+			</form>
+		</section>
+
+		<footer class="card-footer text-center mt-6 pt-4 border-t border-surface-300-600-token">
+			<p class="text-sm">
+				<a href={resolve("/auth/sign-in")} class="anchor text-primary-500 hover:text-primary-600">Back to Sign In</a>
+			</p>
+		</footer>
+	</div>
 </div>

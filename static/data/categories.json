@@ -1,0 +1,85 @@
+{
+	"filters":[
+		{"val":"H", "text":"Habillement", "subcategories":[
+				{"val":"HI", "text":"Tisserand industriel"},
+				{"val":"C", "text":"Chappelier"},
+				{"val":"K", "text":"Bottier/Chaussure"},
+				{"val":"1", "text":"Accessoire d'habillement (Canne, Pipe, Lunettes)"},
+				{"val":"T", "text":"Artisants (Costume, Couture)"},
+				{"val":"D", "text":"Décoration (Dentelle, Broderie)"}
+			]
+		},
+		{"val":"A", "text":"Alimentaire", "subcategories":[
+				{"val":"N", "text":"Apiculteurs (Miel)"},
+				{"val":"2", "text":"Eleveurs (Viande, ou oeufs)"},
+				{"val":"C", "text":"Céréaliers (Céréales, pain, pomme de terre)"},
+				{"val":"M", "text":"Maraichers"},
+				{"val":"L", "text":"Fromagers (Ou lait)"},
+				{"val":"P", "text":"Poisson / Fruits de mer"},
+				{"val":"F", "text":"Fruit (Jus, Confitures), Boissons avec ou sans alcool"},
+				{"val":"G", "text":"AMAP / Grossiste / Epicerie / Restaurant"},
+				{"val":"X", "text":"Autres (Champignons, boulangers/patissier/charcutier, produits de beauté, Spiruline, Huiles, safran)"}
+			]
+		},
+		{"val":"3", "text":"Produits ménagers / de beauté / médicinal"},
+		{"val":"4", "text":"Plantes (Fleurs, arbres)"},
+		{"val":"O", "text":"Artisans / Artistes", "subcategories":[
+				{"val":"Q", "text":"Céramique/Potiers/Emailleur"},
+				{"val":"R", "text":"Couteliers/Armuriers"},
+				{"val":"V", "text":"Verre (Vittre, vitraux, Verrier)"},
+				{"val":"F", "text":"Métal (Bronzier, Forgerons, Ferronerie)"},
+				{"val":"5", "text":"Luthier/Instruments de musique"},
+				{"val":"T", "text":"Cuir (Tanneur, Taxidermiste, Sellier)"},
+				{"val":"0", "text":"Bois/Ebénisterie/Vannerie"},
+				{"val":"Z", "text":"Pierre (Sculpteur, Tailleur)"},
+				{"val":"B", "text":"Bijouterie/Dorure/Horlogerie"},
+				{"val":"U", "text":"Métiers liés à l'architecture, Maison/Véhicules"},
+				{"val":"E", "text":"Autres (Tapis, Cire, Orfèvre)"},
+				{"val":"S", "text":"Arts graphiques (Dessinateur/Enlumineur/Calligraphe/Graveur/Graphiste/Imprimeur/Relieur)"}
+			]
+		},
+		{"val":"I", "text":"Petites et moyennes entreprises (PME)", "subcategories":[
+				{"val":"IH", "text":"Habillement"},
+				{"val":"Y", "text":"Electronique/Electromenager"},
+				{"val":"J", "text":"Autres Jeux/Objets"}
+			]
+		}
+	],
+	"lexiq":{
+		"_A": "Alimentaire",
+		"_B": "Bijouterie/Dorure/Horlogerie (O)",
+		"_C": "Céréaliers (A)",
+		"_D": "Habillement Décoration (Dentelle, Broderie)",
+		"_E": "Artisans Autres (Tapis, Cire, Orfèvre)",
+		"_F": "Fruit (Jus, Confitures), Boissons avec ou sans alcool",
+		"_G": "Grossiste/Epicerie/Restaurant (Ne produit pas, mais vends du local)",
+		"_H": "Habillement",
+		"_I": "Industriel",
+		"_J": "Industriel Jeux/Objets",
+		"_K": "Bottier/Chaussure",
+		"_L": "Fromagers (Ou lait)",
+		"_M": "Maraichers",
+		"_N": "Apiculteurs (Miel)",
+		"_O": "Artisans / Artistes",
+		"_P": "Poisson / Fruits de mer",
+		"_Q": "Céramique/Potiers/Emailleur",
+		"_R": "Couteliers/Armuriers",
+		"_S": "Arts graphiques (Dessinateur/Enlumineur/Calligraphe/Graveur/Graphiste/Imprimeur/Relieur)",
+		"_T": "Cuir (Tanneur, Taxidermiste, Sellier)",
+		"_U": "Métiers liés à l'architecture, Maison/Véhicules",
+		"_V": "Verre (Vittre, vitraux, Verrier)",
+		"_X": "Alimentaire Autres (Champignons, boulangers/patissier/charcutier, produits de beauté, Spiruline, Huiles, safran)",
+		"_Y": "Electronique/Electromenager",
+		"_Z": "Pierre (Sculpteur, Tailleur)",
+		"_0": "Bois/Vannerie",
+		"_1": "Accessoire d'habillement (Canne, Pipe)",
+		"_2": "Eleveurs (Viande ou oeufs)",
+		"_3": "Produits ménagers / de beauté / médicinal",
+		"_4": "Plantes / Fleurs",
+		"_5": "Instruments de musique",
+		"_6": "",
+		"_7": "",
+		"_8": "",
+		"_9": ""
+	}
+}

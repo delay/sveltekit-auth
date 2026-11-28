@@ -1,11 +1,20 @@
 import { DATABASE_URL } from '$env/static/private';
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres';
 import pg from 'pg';
-const pool = new pg.Pool({
-	connectionString: DATABASE_URL
-});
+import { building } from '$app/environment';
 
-await pool.connect();
-const db = drizzle(pool);
+let db:NodePgDatabase|null;
 
+async function getDb() {
+	if (building) {
+		return null; // ou un mock
+	}
+	if (!db) {
+		const pool = new pg.Pool({connectionString: DATABASE_URL});
+		await pool.connect();
+		db = drizzle(pool);
+	}
+	return db;
+}
+db = await getDb();
 export default db;

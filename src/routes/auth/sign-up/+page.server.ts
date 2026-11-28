@@ -1,51 +1,90 @@
 import { fail, redirect } from '@sveltejs/kit';
 import { setFlash } from 'sveltekit-flash-message/server';
-import { setError, superValidate } from 'sveltekit-superforms/server';
 import { Argon2id } from 'oslo/password';
 import { lucia } from '$lib/server/lucia';
 import { createUser } from '$lib/server/database/user-model';
-
-import { userSchema } from '$lib/config/zod-schemas';
 import { sendVerificationEmail } from '$lib/config/email-messages';
+import type { PageServerLoad, Actions } from './$types.js';
+import { resolve } from '$app/paths';
+import { sql } from 'drizzle-orm';
 
-const signUpSchema = userSchema.pick({
-	firstName: true,
-	lastName: true,
-	email: true,
-	password: true,
-	terms: true
-});
-
-export const load = async (event) => {
+export const load: PageServerLoad = async (event) => {
 	if (event.locals.user) {
-		redirect(302, '/dashboard');
+		redirect(302, resolve('/dashboard'));
 	}
-	const form = await superValidate(event, signUpSchema);
 	return {
-		form
+		form: {
+			data: {
+				firstName: '',
+				lastName: '',
+				email: '',
+				password: '',
+				terms: false
+			},
+			errors: {},
+			valid: true
+		}
 	};
 };
 
-export const actions = {
+/** @satisfies {import('./$types').Actions} */
+export const actions: Actions = {
 	default: async (event) => {
-		const form = await superValidate(event, signUpSchema);
-		//console.log(form);
+		const formData = await event.request.formData();
+		const data = {
+			firstName: formData.get('firstName')?.toString() || '',
+			lastName: formData.get('lastName')?.toString() || '',
+			email: formData.get('email')?.toString() || '',
+			password: formData.get('password')?.toString() || '',
+			terms: formData.get('terms') === 'on'
+		};
 
-		if (!form.valid) {
+		// Validation simple
+		const errors: Record<string, string> = {};
+		
+		if (!data.firstName) {
+			errors.firstName = 'First name is required';
+		}
+		
+		if (!data.lastName) {
+			errors.lastName = 'Last name is required';
+		}
+		
+		if (!data.email) {
+			errors.email = 'Email is required';
+		} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+			errors.email = 'Please enter a valid email address';
+		}
+		
+		if (!data.password) {
+			errors.password = 'Password is required';
+		} else if (data.password.length < 6) {
+			errors.password = 'Password must be at least 6 characters';
+		}
+		
+		if (!data.terms) {
+			errors.terms = 'You must accept the terms and privacy policy';
+		}
+
+		if (Object.keys(errors).length > 0) {
 			return fail(400, {
-				form
+				form: {
+					data,
+					errors,
+					valid: false
+				}
 			});
 		}
 
 		try {
-			const password = await new Argon2id().hash(form.data.password);
+			const password = await new Argon2id().hash(data.password);
 			const token = crypto.randomUUID();
 			const id = crypto.randomUUID();
 			const user = {
 				id: id,
-				email: form.data.email.toLowerCase(),
-				firstName: form.data.firstName,
-				lastName: form.data.lastName,
+				email: data.email.toLowerCase(),
+				firstName: data.firstName,
+				lastName: data.lastName,
 				password: password,
 				role: 'USER',
 				verified: false,
@@ -57,7 +96,7 @@ export const actions = {
 			const newUser = await createUser(user);
 			if (newUser) {
 				await sendVerificationEmail(newUser.email, token);
-				const session = await lucia.createSession(newUser.id, {});
+				const session = await lucia.createSession(newUser.id, {producerId: null});
 				const sessionCookie = lucia.createSessionCookie(session.id);
 				event.cookies.set(sessionCookie.name, sessionCookie.value, {
 					path: '.',
@@ -75,9 +114,21 @@ export const actions = {
 			console.error(e);
 			setFlash({ type: 'error', message: 'Account was not able to be created.' }, event);
 			// email already in use
-			//might be other type of error but this is most common and this is how lucia docs sets the error to duplicate user
-			return setError(form, 'email', 'A user with that email already exists.');
+			return fail(400, {
+				form: {
+					data,
+					errors: { email: 'A user with that email already exists.' },
+					valid: false
+				}
+			});
 		}
-		return { form };
+		
+		return { 
+			form: {
+				data,
+				errors: {},
+				valid: true
+			}
+		};
 	}
 };
