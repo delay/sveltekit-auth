@@ -121,5 +121,5 @@ export async function load(event) {
 		redirect(302, resolve('/auth/sign-in'));
 	}
 
-	redirect(302, resolve('/dashboard'));
+	return { provider: 'facebook' };
 }
