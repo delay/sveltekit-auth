@@ -1,9 +1,10 @@
 <script>
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 
 	onMount(() => {
-		goto('/dashboard', { invalidateAll: true });
+		goto(resolve('/dashboard'), { invalidateAll: true });
 	});
 </script>
 
