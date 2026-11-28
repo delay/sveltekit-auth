@@ -1,140 +1,38 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
-	import * as Command from '$lib/components/ui/command';
-	import * as Avatar from '$lib/components/ui/avatar';
-	import { Sun, Moon, SunMoon, UserRound, LogOut } from 'lucide-svelte';
-	import { setMode, resetMode } from 'mode-watcher';
 	import { APP_NAME } from '$lib/config/constants';
-	import Logo from '$lib/components/logo/logo.svelte';
-	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
-	import convertNameToInitials from '$lib/_helpers/convertNameToInitials';
-
-	export let user: any;
-	$: currentPage = $page.url.pathname;
-
-	function signOut() {
-		// Create a form element
-		var form = document.createElement('form');
-		form.method = 'POST';
-		form.action = '/auth/sign-out';
-		document.body.appendChild(form);
-		form.submit();
-	}
-
-	let initials: string = '';
-	$: {
-		if (user) {
-			initials = convertNameToInitials(user.firstName, user.lastName);
-		}
-	}
+	import { Navigation } from '@skeletonlabs/skeleton-svelte';
+	import { MapPin } from 'lucide-svelte';
+	import IconMenu from '@lucide/svelte/icons/menu';
+	import IconFolder from '@lucide/svelte/icons/folder';
+	import signOut from '$lib/components/navigation/sign-out';
+	import IconUserEdit from '@lucide/svelte/icons/user-pen';
+	import IconPlug from '@lucide/svelte/icons/unplug';
+	import IconSettings from '@lucide/svelte/icons/settings';
+	import { PUBLIC_BASE_PATH } from '$env/static/public';
+	// import MyLogo from '$lib/assets/img/logoOpenProduct.png?enhanced';
+	import { page } from '$app/state';
+	import { resolve } from '$app/paths';
+	let value = $state('/');
+	// Read straight from the layout data so it always reflects the current session.
+	let userState = $derived(page.data.user);
 </script>
 
-<header class="bg-background sticky top-0 z-40 w-full border-b">
-	<div class="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
-		<div class="flex gap-6 md:gap-10">
-			<a class="flex items-center space-x-2" href="/"
-				><Logo size="24"></Logo><span class="inline-block font-bold">{APP_NAME}</span></a
-			>
-			<nav class="flex gap-6">
-				<a
-					class="flex items-center text-sm font-medium text-muted-foreground"
-					href="/"
-					class:active={'/' === currentPage}>Home</a
-				>
-				<a
-					class="flex items-center text-sm font-medium text-muted-foreground"
-					href="/dashboard"
-					class:active={'/dashboard' === currentPage}>Protected</a
-				>
-			</nav>
-		</div>
-		<div class="flex flex-1 items-center justify-end space-x-4">
-			<nav class="flex items-center space-x-1">
-				{#if !user}
-					<Button on:click={() => goto('/auth/sign-in')}>Sign in</Button>
-					<DropdownMenu.Root>
-						<DropdownMenu.Trigger asChild let:builder>
-							<Button builders={[builder]} variant="ghost" size="icon">
-								<Sun
-									class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
-								/>
-								<Moon
-									class="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
-								/>
-								<span class="sr-only">Toggle theme</span>
-							</Button>
-						</DropdownMenu.Trigger>
-						<DropdownMenu.Content align="end">
-							<DropdownMenu.Item on:click={() => setMode('light')}>Light</DropdownMenu.Item>
-							<DropdownMenu.Item on:click={() => setMode('dark')}>Dark</DropdownMenu.Item>
-							<DropdownMenu.Item on:click={() => resetMode()}>System</DropdownMenu.Item>
-						</DropdownMenu.Content>
-					</DropdownMenu.Root>
-				{:else}
-					<DropdownMenu.Root>
-						<DropdownMenu.Trigger asChild let:builder>
-							<Button variant="ghost" builders={[builder]} class="relative h-8 w-8 rounded-full">
-								<Avatar.Root class="h-8 w-8">
-									<Avatar.Fallback>{initials}</Avatar.Fallback>
-								</Avatar.Root>
-							</Button>
-						</DropdownMenu.Trigger>
-						<DropdownMenu.Content class="w-56" align="end">
-							<DropdownMenu.Label class="font-normal">
-								<div class="flex flex-col space-y-1">
-									<p class="text-sm font-medium leading-none">{user?.firstName} {user?.lastName}</p>
-									<p class="text-xs leading-none text-muted-foreground">{user?.email}</p>
-								</div>
-							</DropdownMenu.Label>
-							<DropdownMenu.Separator />
-							<DropdownMenu.Group>
-								<DropdownMenu.Item on:click={() => goto('/profile')}>
-									<UserRound class="mr-2 h-4 w-4" />
-									Profile
-									<DropdownMenu.Shortcut>⇧⌘P</DropdownMenu.Shortcut>
-								</DropdownMenu.Item>
-							</DropdownMenu.Group>
+  <Navigation.Rail>
+    {#snippet header()}
+    	<Navigation.Tile href="#" title="Menu"><IconMenu /></Navigation.Tile>
+		<Navigation.Tile label="Accueil" href={resolve("/")}><IconFolder /></Navigation.Tile>
+		<Navigation.Tile label="Carte" href={resolve("/map")}><MapPin /></Navigation.Tile>
+		{#if userState}
+			<Navigation.Tile label="Mon Profil" href={resolve("/dashboard")}><IconUserEdit /></Navigation.Tile>
+			<Navigation.Tile label="Deconnexion" onclick={signOut}><IconPlug /></Navigation.Tile>
+		{:else}
+			<Navigation.Tile label="Connexion" href={resolve("/auth/sign-in")}><IconPlug /></Navigation.Tile>
+		{/if}
+      <Navigation.Tile labelExpanded="A propos" href={resolve("/about")} title="settings"><IconSettings /></Navigation.Tile>
+    {/snippet}
+    <!-- {#snippet tiles()}
+	{/snippet}
+    {#snippet footer()}
+    {/snippet} -->
+  </Navigation.Rail>
 
-							<DropdownMenu.Sub>
-								<DropdownMenu.SubTrigger>
-									<Sun
-										class="mr-2 h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
-									/>
-									<Moon
-										class="absolute mr-2 h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
-									/>
-									Appearance
-								</DropdownMenu.SubTrigger>
-								<DropdownMenu.SubContent>
-									<DropdownMenu.Item on:click={() => setMode('light')}
-										><Sun class="mr-2 h-4 w-4" />Light
-									</DropdownMenu.Item>
-									<DropdownMenu.Item on:click={() => setMode('dark')}
-										><Moon class="mr-2 h-4 w-4" />Dark
-									</DropdownMenu.Item>
-									<DropdownMenu.Item on:click={() => setMode('system')}
-										><SunMoon class="mr-2 h-4 w-4" />System
-									</DropdownMenu.Item>
-								</DropdownMenu.SubContent>
-							</DropdownMenu.Sub>
-							<DropdownMenu.Separator />
-							<DropdownMenu.Item on:click={signOut}>
-								<LogOut class="mr-2 h-4 w-4" />
-								Sign out
-								<DropdownMenu.Shortcut>⇧⌘Q</DropdownMenu.Shortcut>
-							</DropdownMenu.Item>
-						</DropdownMenu.Content>
-					</DropdownMenu.Root>
-				{/if}
-			</nav>
-		</div>
-	</div>
-</header>
-
-<style>
-	.active {
-		@apply text-primary;
-	}
-</style>

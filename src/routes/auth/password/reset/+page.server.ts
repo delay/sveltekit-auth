@@ -1,44 +1,49 @@
 import { fail, redirect } from '@sveltejs/kit';
-import { setError, superValidate } from 'sveltekit-superforms/server';
-import { userSchema } from '$lib/config/zod-schemas';
 import { sendPasswordResetEmail } from '$lib/config/email-messages';
 import { getUserByEmail, updateUser } from '$lib/server/database/user-model.js';
+import type { Actions } from './$types.js';
 
-const resetPasswordSchema = userSchema.pick({ email: true });
+export const actions: Actions = {
+	default: async ({ request }) => {
+		const formData = await request.formData();
+		const email = formData.get('email')?.toString();
 
-export const load = async (event) => {
-	const form = await superValidate(event, resetPasswordSchema);
-	return {
-		form
-	};
-};
-
-export const actions = {
-	default: async (event) => {
-		const form = await superValidate(event, resetPasswordSchema);
-
-		if (!form.valid) {
+		if (!email) {
 			return fail(400, {
-				form
+				error: 'Email is required',
+				email
+			});
+		}
+
+		// Validate email format
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		if (!emailRegex.test(email)) {
+			return fail(400, {
+				error: 'Please enter a valid email address',
+				email
 			});
 		}
 
 		try {
-			const user = await getUserByEmail(form.data.email);
+			const user = await getUserByEmail(email);
 			if (!user) {
-				return setError(form, 'The email address does not have an account.');
+				return fail(400, {
+					error: 'The email address does not have an account.',
+					email
+				});
 			}
+			
 			console.log('reset user password');
 			const token = crypto.randomUUID();
 			await updateUser(user.id, { token: token });
-			await sendPasswordResetEmail(form.data.email, token);
+			await sendPasswordResetEmail(email, token);
 		} catch (e) {
 			console.error(e);
-			return setError(
-				form,
-				'The was a problem resetting your password. Please contact support if you need further help.'
-			);
+			return fail(500, {
+				error: 'There was a problem resetting your password. Please contact support if you need further help.',
+				email
+			});
 		}
-		redirect(302, '/auth/password/reset/success');
+		redirect(302, resolve('/auth/password/reset/success'));
 	}
 };

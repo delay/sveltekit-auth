@@ -1,98 +1,190 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import * as Form from '$lib/components/ui/form';
-	import * as Card from '$lib/components/ui/card';
+	import { enhance } from '$app/forms';
+	import { Loader, CircleAlert } from 'lucide-svelte';
+	import { resolve } from '$app/paths';
+	import GoogleIcon from '$lib/components/icons/GoogleIcon.svelte';
+	import FacebookIcon from '$lib/components/icons/FacebookIcon.svelte';
+	import MicrosoftIcon from '$lib/components/icons/MicrosoftIcon.svelte';
 
-	import * as Alert from '$lib/components/ui/alert';
-	import { userSchema } from '$lib/config/zod-schemas';
-	import type { SuperValidated } from 'sveltekit-superforms';
-	import { Loader2 } from 'lucide-svelte';
-	import { AlertCircle } from 'lucide-svelte';
-	import { Button } from '$lib/components/ui/button';
-	const signUpSchema = userSchema.pick({
-		firstName: true,
-		lastName: true,
-		email: true,
-		password: true,
-		terms: true
-	});
+	interface Props {
+		form?: {
+			data: {
+				firstName: string;
+				lastName: string;
+				email: string;
+				password: string;
+				terms: boolean;
+			};
+			errors: Record<string, string>;
+			valid: boolean;
+		};
+	}
 
-	type SignUpSchema = typeof signUpSchema;
-
-	export let form: SuperValidated<SignUpSchema>;
+	let { form }: Props = $props();
+	
+	// Valeurs dérivées avec accès sécurisé
+	const formData = $derived.by(() => ({
+		data: form?.data || { firstName: '', lastName: '', email: '', password: '', terms: false },
+		errors: form?.errors || {},
+		valid: form?.valid ?? true
+	}));
+	
+	let submitting = $state(false);
 </script>
 
-<!--<Button on:click={() => goto('/auth/oauth/google')}>Sign up with Google</Button>-->
-<div class="flex items-center justify-center mx-auto max-w-2xl">
-	<Form.Root let:submitting let:errors method="POST" {form} schema={signUpSchema} let:config>
-		<Card.Root>
-			<Card.Header class="space-y-1">
-				<Card.Title class="text-2xl">Create an account</Card.Title>
-				<Card.Description
-					>Already have an account? <a href="/auth/sign-in" class="underline">Sign in here.</a
-					></Card.Description
-				>
-			</Card.Header>
-			<Card.Content class="grid gap-4">
-				{#if errors?._errors?.length}
-					<Alert.Root variant="destructive">
-						<AlertCircle class="h-4 w-4" />
-						<Alert.Title>Error</Alert.Title>
-						<Alert.Description>
-							{#each errors._errors as error}
-								{error}
-							{/each}
-						</Alert.Description>
-					</Alert.Root>
+<div class="container h-full mx-auto flex justify-center items-center">
+	<div class="card p-8 w-full max-w-md">
+		<header class="card-header text-center mb-6">
+			<h1 class="h2 font-bold">Créer un compte</h1>
+			<p class="text-surface-600-300-token">
+				Déjà un compte ? 
+				<a href="{resolve("/auth/sign-in")}" class="anchor">Se connecter ici</a>
+			</p>
+		</header>
+
+		{#if formData.errors.general}
+			<aside class="alert variant-filled-error mb-4">
+				<div class="alert-message">
+					<CircleAlert class="w-4 h-4" />
+					<p>{formData.errors.general}</p>
+				</div>
+			</aside>
+		{/if}
+
+		<form 
+			method="POST" 
+			class="space-y-4"
+			use:enhance={() => {
+				submitting = true;
+				return async ({ update }) => {
+					await update();
+					submitting = false;
+				};
+			}}
+		>
+			<div class="grid grid-cols-2 gap-4">
+				<label class="label">
+					<span>Prénom</span>
+					<input 
+						class="input {formData.errors.firstName ? 'input-error' : ''}" 
+						type="text" 
+						name="firstName" 
+						placeholder="Jean"
+						value={formData.data.firstName}
+						required
+					/>
+					{#if formData.errors.firstName}
+						<p class="text-error-500 text-sm mt-1">{formData.errors.firstName}</p>
+					{/if}
+				</label>
+
+				<label class="label">
+					<span>Nom</span>
+					<input 
+						class="input {formData.errors.lastName ? 'input-error' : ''}" 
+						type="text" 
+						name="lastName" 
+						placeholder="Dupont"
+						value={formData.data.lastName}
+						required
+					/>
+					{#if formData.errors.lastName}
+						<p class="text-error-500 text-sm mt-1">{formData.errors.lastName}</p>
+					{/if}
+				</label>
+			</div>
+
+			<label class="label">
+				<span>Email</span>
+				<input 
+					class="input {formData.errors.email ? 'input-error' : ''}" 
+					type="email" 
+					name="email" 
+					placeholder="jean.dupont@example.com"
+					value={formData.data.email}
+					required
+				/>
+				{#if formData.errors.email}
+					<p class="text-error-500 text-sm mt-1">{formData.errors.email}</p>
 				{/if}
-				<Form.Field {config} name="firstName">
-					<Form.Item>
-						<Form.Label>First Name</Form.Label>
-						<Form.Input />
-						<Form.Validation />
-					</Form.Item>
-				</Form.Field>
-				<Form.Field {config} name="lastName">
-					<Form.Item>
-						<Form.Label>Last Name</Form.Label>
-						<Form.Input />
-						<Form.Validation />
-					</Form.Item>
-				</Form.Field>
-				<Form.Field {config} name="email">
-					<Form.Item>
-						<Form.Label>Email</Form.Label>
-						<Form.Input />
-						<Form.Validation />
-					</Form.Item>
-				</Form.Field>
-				<Form.Field {config} name="password">
-					<Form.Item>
-						<Form.Label>Password</Form.Label>
-						<Form.Input type="password" />
-						<Form.Validation />
-					</Form.Item>
-				</Form.Field>
-				<Form.Field {config} name="terms">
-					<Form.Item class="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-						<Form.Checkbox />
-						<div class="space-y-1 leading-none">
-							<Form.Label>I Accept the terms and privacy policy.</Form.Label>
-							<Form.Description>
-								You agree to the <a href="/terms" class="text-primaryHover underline">terms</a> and
-								<a href="/privacy" class="text-primaryHover underline">privacy policy</a>.
-							</Form.Description>
-						</div>
-					</Form.Item>
-				</Form.Field>
-			</Card.Content>
-			<Card.Footer>
-				<Form.Button class="w-full" disabled={submitting}
-					>{#if submitting}
-						<Loader2 class="mr-2 h-4 w-4 animate-spin" />
-						Please wait{:else}Sign Up{/if}
-				</Form.Button>
-			</Card.Footer>
-		</Card.Root>
-	</Form.Root>
+			</label>
+
+			<label class="label">
+				<span>Mot de passe</span>
+				<input 
+					class="input {formData.errors.password ? 'input-error' : ''}" 
+					type="password" 
+					name="password"
+					placeholder="Au moins 6 caractères"
+					value={formData.data.password}
+					required
+				/>
+				{#if formData.errors.password}
+					<p class="text-error-500 text-sm mt-1">{formData.errors.password}</p>
+				{/if}
+			</label>
+
+			<label class="flex items-start space-x-3 p-4 border border-surface-300-600-token rounded-container-token">
+				<input 
+					type="checkbox" 
+					name="terms" 
+					class="checkbox {formData.errors.terms ? 'checkbox-error' : ''}"
+					checked={formData.data.terms}
+					required
+				/>
+				<div class="space-y-1 leading-none">
+					<span class="text-sm font-medium">J'accepte les conditions d'utilisation et la politique de confidentialité</span>
+					<p class="text-xs text-surface-600-300-token">
+						Vous acceptez les 
+						<a href={resolve('/terms')} class="anchor">conditions d'utilisation</a> et la 
+						<a href={resolve('/privacy')} class="anchor">politique de confidentialité</a>.
+					</p>
+				</div>
+			</label>
+			{#if formData.errors.terms}
+				<p class="text-error-500 text-sm">{formData.errors.terms}</p>
+			{/if}
+
+			<button 
+				type="submit" 
+				class="btn variant-filled-primary w-full"
+				disabled={submitting}
+			>
+				{#if submitting}
+					<Loader class="w-4 h-4 animate-spin mr-2" />
+					Création en cours...
+				{:else}
+					S'inscrire
+				{/if}
+			</button>
+		</form>
+
+		<div class="my-6 flex items-center gap-4">
+			<span class="h-px flex-1 bg-surface-300-600-token"></span>
+			<span class="text-xs uppercase text-surface-600-300-token">ou</span>
+			<span class="h-px flex-1 bg-surface-300-600-token"></span>
+		</div>
+
+		<a
+			href={resolve('/auth/oauth/google')}
+			class="btn variant-soft-surface w-full flex items-center justify-center gap-2"
+		>
+			<GoogleIcon class="h-5 w-5" />
+			S'inscrire avec Google
+		</a>
+		<a
+			href={resolve('/auth/oauth/facebook')}
+			class="btn variant-soft-surface w-full flex items-center justify-center gap-2"
+		>
+			<FacebookIcon class="h-5 w-5" />
+			S'inscrire avec Facebook
+		</a>
+		<a
+			href={resolve('/auth/oauth/microsoft')}
+			class="btn variant-soft-surface w-full flex items-center justify-center gap-2"
+		>
+			<MicrosoftIcon class="h-5 w-5" />
+			S'inscrire avec Microsoft
+		</a>
+	</div>
 </div>

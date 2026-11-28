@@ -1,9 +1,11 @@
 import { fail } from '@sveltejs/kit';
-import { setError, superValidate, message } from 'sveltekit-superforms/server';
+import { setError, superValidate, message } from 'sveltekit-superforms';
 import { setFlash } from 'sveltekit-flash-message/server';
 import { userSchema } from '$lib/config/zod-schemas';
 import { updateEmailAddressSuccessEmail } from '$lib/config/email-messages';
 import { updateUser } from '$lib/server/database/user-model.js';
+import type { PageServerLoad, Actions } from './$types.js';
+import { zod } from 'sveltekit-superforms/adapters';
 
 const profileSchema = userSchema.pick({
 	firstName: true,
@@ -11,29 +13,24 @@ const profileSchema = userSchema.pick({
 	email: true
 });
 
-export const load = async (event) => {
-	const form = await superValidate(event, profileSchema);
-
+export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user;
 	if (!user) {
 		return fail(400, {
-			form,
 			error: 'You must be signed in to view this page.'
 		});
 	}
-	form.data = {
-		firstName: user?.firstName,
-		lastName: user?.lastName,
-		email: user?.email
-	};
+
+	const form = await superValidate(profileSchema, zod);
+
 	return {
 		form
 	};
 };
 
-export const actions = {
+export const actions: Actions = {
 	default: async (event) => {
-		const form = await superValidate(event, profileSchema);
+		const form = await superValidate(event, profileSchema, zod);
 		//console.log(form);
 
 		if (!form.valid) {

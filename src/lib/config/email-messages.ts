@@ -1,21 +1,31 @@
 import sendEmail from '$lib/server/email-send';
-import { BASE_URL, APP_NAME } from '$lib/config/constants';
+import { APP_NAME, BASE_URL } from '$lib/config/constants';
+import { PUBLIC_BASE_PATH } from '$env/static/public';
+
+function getBaseUrl() : string {
+	let base_path = BASE_URL + PUBLIC_BASE_PATH;
+	while (base_path.charAt(base_path.length-1)=='/') {
+		base_path = base_path.substring(0,base_path.length-1);
+	}
+	return base_path;
+}
 
 // Send an email to verify the user's address
 export const sendVerificationEmail = async (email: string, token: string) => {
-	const verifyEmailURL = `${BASE_URL}/auth/verify/email-${token}`;
-	const textEmail = `Please visit the link below to verify your email address for your ${APP_NAME} account.\n\n  
-    ${verifyEmailURL} \n\nIf you did not create this account, you can disregard this email.`;
-	const htmlEmail = `<p>Please click this <a href="${verifyEmailURL}">link</a> to verify your email address for your ${APP_NAME} account.</p>  <p>You can also visit the link below.</p><p>${verifyEmailURL}</p><p>If you did not create this account, you can disregard this email.</p>`;
-	const subject = `Please confirm your email address for ${APP_NAME}`;
+	const verifyEmailURL = getBaseUrl() + `/auth/verify/email-`+token;
+	const textEmail = `S'il vous plait allez sur le lien ci-dessous pour valider votre compte sur ${APP_NAME}.\n\n  
+    	${verifyEmailURL} \n\nSi vous n'avez pas créé de compte vous pouyvez ignorer ce mail.`;
+	const htmlEmail = `<p>Clickez sur ce lien <a href="${verifyEmailURL}">${verifyEmailURL}</a> pour vérifier votre email pour votre compte ${APP_NAME}.</p>`;
+	const subject = `${APP_NAME} : Confirmez votre email`;
 	const resultSend = sendEmail(email, subject, htmlEmail, textEmail);
 	return resultSend;
 };
 
 // Send an email to welcome the new user
 export const sendWelcomeEmail = async (email: string) => {
-	const textEmail = `Thanks for verifying your account with ${APP_NAME}.\nYou can now sign in to your account at the link below.\n\n${BASE_URL}/auth/sign-in`;
-	const htmlEmail = `<p>Thanks for verifying your account with ${APP_NAME}.</p><p>You can now <a href="${BASE_URL}/auth/sign-in">sign in</a> to your account.</p>`;
+	const url = getBaseUrl() + `/auth/sign-in`;
+	const textEmail = `Merci d'avoir valider votre compte ${APP_NAME}.\n Vous pouvez maintenant vous connecter avec ce lien \n`+url;
+	const htmlEmail = `<p>Merci d'avoir valider votre compte ${APP_NAME}.</p><p>Vous pouvez maintenant vous connecter avec ce lien <a href=`+url+`>sign in</a></p>`;
 	const subject = `Welcome to ${APP_NAME}`;
 	const resultSend = sendEmail(email, subject, htmlEmail, textEmail);
 	return resultSend;
@@ -23,12 +33,12 @@ export const sendWelcomeEmail = async (email: string) => {
 
 // Send an email to reset the user's password
 export const sendPasswordResetEmail = async (email: string, token: string) => {
-	const updatePasswordURL = `${BASE_URL}/auth/password/update-${token}`;
-	const textEmail = `Please visit the link below to change your password for ${APP_NAME}.\n\n  
-    ${updatePasswordURL} \n\nIf you did not request to change your password, you can disregard this email.`;
-	const htmlEmail = `<p>Please click this <a href="${updatePasswordURL}">link</a> to change your password for ${APP_NAME}.</p>  
-	<p>You can also visit the link below.</p><p>${updatePasswordURL}</p><p>If you did not request to change your password, you can disregard this email.</p>`;
-	const subject = `Change your password for ${APP_NAME}`;
+	const updatePasswordURL = getBaseUrl() + `/auth/password/update-` + token;
+	const textEmail = `S'il vous plait clickez sur le lien ci-dessous pour changer votre mot de passe pour l'application ${APP_NAME}.\n\n  
+    ${updatePasswordURL} \n\nSi vous n'avez pas créé de compte vous pouyvez ignorer ce mail.`;
+	const htmlEmail = `<p>S'il vous plait clickez sur le lien ci-dessous pour changer votre mot de passe pour l'application <a href="${updatePasswordURL}">${updatePasswordURL}</a> ${APP_NAME}.</p>  
+	<p>.</p><p>${updatePasswordURL}</p><p>Si vous n'avez pas créé de compte vous pouyvez ignorer ce mail</p>`;
+	const subject = `${APP_NAME} : Changez votre mot de passe`;
 	const resultSend = sendEmail(email, subject, htmlEmail, textEmail);
 	return resultSend;
 };
@@ -40,15 +50,17 @@ export const updateEmailAddressSuccessEmail = async (
 	oldEmail: string,
 	token: string
 ) => {
-	const verifyEmailURL = `${BASE_URL}/auth/verify/email-${token}`;
-	const textEmail = `Please visit the link below to verify your email address for your ${APP_NAME} account.\n\n  ${verifyEmailURL}`;
-	const htmlEmail = `<p>Please click this <a href="${verifyEmailURL}">link</a> to verify your email address for your ${APP_NAME} account.</p>  <p>You can also visit the link below.</p><p>${verifyEmailURL}</p>`;
-	const subject = `Please confirm your email address for ${APP_NAME}`;
+	const verifyEmailURL = getBaseUrl() + `/auth/verify/email-` + token;
+	const textEmail = `Veuillez visiter le lien ci-dessous pour vérifier votre adresse email pour votre compte ${APP_NAME}.\n\n  ${verifyEmailURL}`;
+	const htmlEmail = `<p>Veuillez cliquer sur ce <a href="${verifyEmailURL}">lien</a> pour vérifier votre adresse email pour votre compte ${APP_NAME}.</p>  <p>Vous pouvez également visiter le lien ci-dessous.</p><p>${verifyEmailURL}</p>`;
+	const subject = `Veuillez confirmer votre adresse email pour ${APP_NAME}`;
 	sendEmail(email, subject, htmlEmail, textEmail);
 
-	//send email to user about email change.
-	const textEmailChange = `Your ${APP_NAME} account email has been updated from ${oldEmail} to ${email}.  If you DID NOT request this change, please contact support at: ${BASE_URL} to revert the changes.`;
-	const htmlEmailChange = `<p>Your ${APP_NAME} account email has been updated from ${oldEmail} to ${email}.</p><p>If you DID NOT request this change, please contact support at: <a href='${BASE_URL}'>${BASE_URL}</a> to revert the changes.</p>`;
-	const subjectChange = `Your email address for ${APP_NAME} has changed.`;
+	// Envoi d'un email à l'utilisateur concernant le changement d'email
+	const url =  getBaseUrl();
+	const textEmailChange = `L'adresse email de votre compte ${APP_NAME} a été modifiée de ${oldEmail} à ${email}. Si vous N'AVEZ PAS demandé cette modification, veuillez contacter le support à : `+resolve("/")+` pour annuler les changements.`;
+	const htmlEmailChange = `<p>L'adresse email de votre compte ${APP_NAME} a été modifiée de ${oldEmail} à ${email}.</p><p>Si vous N'AVEZ PAS demandé cette modification, veuillez contacter le support à :`
+		+` <a href='`+url+`'>`+url+`</a> pour annuler les changements.</p>`;
+	const subjectChange = `Votre adresse email pour ${APP_NAME} a été modifiée`;
 	sendEmail(oldEmail, subjectChange, htmlEmailChange, textEmailChange);
 };

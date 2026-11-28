@@ -76,14 +76,14 @@
           "primaryKey": false,
           "notNull": true
         },
-        "first_name": {
-          "name": "first_name",
+        "firstname": {
+          "name": "firstname",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "last_name": {
-          "name": "last_name",
+        "lastname": {
+          "name": "lastname",
           "type": "text",
           "primaryKey": false,
           "notNull": true
