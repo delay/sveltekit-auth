@@ -20,11 +20,11 @@ bun run build
 
 if [ $ENV == "dev" ]; then
 	echo "Send to production"
-	# rsync -avpzh build package.json  svelte.config.js tailwind.config.js postcss.config.cjs components.json vite.config.ts tsconfig.json drizzle.config.ts $PRODUTION_HOST:$PRODUCTION_DIR/
+	# rsync -avpzh build package.json  svelte.config.js tailwind.config.js postcss.config.cjs components.json vite.config.ts tsconfig.json drizzle.config.ts src/lib src/routes $PRODUTION_HOST:$PRODUCTION_DIR/
 	# rsync -avpzh scripts .env.production $PRODUTION_HOST:~/
 else
 	echo "Copy to production"
-	cp -r build package.json  svelte.config.js tailwind.config.js postcss.config.cjs components.json vite.config.ts tsconfig.json drizzle.config.ts $PRODUCTION_DIR/
+	cp -r build package.json  svelte.config.js tailwind.config.js postcss.config.cjs components.json vite.config.ts tsconfig.json drizzle.config.ts src/lib src/routes $PRODUCTION_DIR/
 fi
 
 ./scripts/db_dump.sh

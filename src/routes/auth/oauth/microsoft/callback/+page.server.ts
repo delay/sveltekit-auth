@@ -41,7 +41,7 @@ export async function load(event) {
 		const tokens = await microsoftOauth.validateAuthorizationCode(code, storedCodeVerifier);
 		const response = await fetch('https://graph.microsoft.com/v1.0/me', {
 			headers: {
-				Authorization: `Bearer ${tokens.accessToken}`
+				Authorization: `Bearer ${tokens.accessToken()}`
 			}
 		});
 		if (!response.ok) {
@@ -122,5 +122,5 @@ export async function load(event) {
 		redirect(302, resolve('/auth/sign-in'));
 	}
 
-	redirect(302, resolve('/dashboard'));
+	return { provider: 'microsoft' };
 }

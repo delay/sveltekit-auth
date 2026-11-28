@@ -76,7 +76,7 @@
 				<span>Mot de passe</span>&nbsp;<button type="button" class="toggle-password" onclick="{() => hide_password = !hide_password}">👁️</button>
 				<input 
 					class="input {formData.errors.password ? 'input-error' : ''}" 
-					type="{hide_password? "password" : "text"}" 
+					type="{hide_password? "current-password" : "text"}" 
 					name="password"
 					value={formData.data.password}
 					required

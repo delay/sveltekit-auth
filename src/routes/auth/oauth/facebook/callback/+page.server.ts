@@ -39,7 +39,7 @@ export async function load(event) {
 			`https://graph.facebook.com/me?fields=id,name,email,first_name,last_name`,
 			{
 				headers: {
-					Authorization: `Bearer ${tokens.accessToken}`
+					Authorization: `Bearer ${tokens.accessToken()}`
 				}
 			}
 		);
@@ -121,5 +121,5 @@ export async function load(event) {
 		redirect(302, resolve('/auth/sign-in'));
 	}
 
-	redirect(302, resolve('/dashboard'));
+	return { provider: 'facebook' };
 }
